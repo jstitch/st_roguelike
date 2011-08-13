@@ -71,7 +71,7 @@ def usage():
     print '   --library=ui_library_name : same as above'
     print '   --maximize                : maximize display in screen'
     print '   --forcedim                : forces display size to maximum allowed by current screen'
-    print '                               (allows low-res screens to run the game - warning, ver low res might not render things well)'
+    print '                               (allows low-res screens to run the game - warning, very low res might not render things well)'
     print '   --debug                   : enable debug mode'
     print '   -v                        : game version'
     print '   -h | -? | --help          : this help screen'

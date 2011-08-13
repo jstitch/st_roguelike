@@ -143,8 +143,8 @@ class UI:
                              y - conarea_h//2 or
                              level.map.h - conarea_h)
                             or 0) or 0)
-            (maxx, maxy) = (level.map.w <= conarea_w and level.map.w or conarea_w + minx,
-                            level.map.h <= conarea_h and level.map.h or conarea_h + miny)
+            (maxx, maxy) = (level.map.w if level.map.w <= conarea_w else conarea_w + minx,
+                            level.map.h if level.map.h <= conarea_h else conarea_h + miny)
 
             # draw objects in map...
 

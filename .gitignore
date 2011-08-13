@@ -1,2 +1,4 @@
+*~
 *.pyc
 libtcod.so
+*.log
