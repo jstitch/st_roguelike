@@ -113,8 +113,8 @@ class curses_wrapper:
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': win, 'name': 'messages' }
         self.messages = map_
 
-        w = self.maxx*80//100 + (1 if self.maxx % 5 != 0 else 0)
-        h = self.maxy*80//100 + (1 if self.maxy % 10 > 5 else 0)
+        w = self.maxx*80//100 + (self.maxx % 5 != 0 and 1 or 0)
+        h = self.maxy*80//100 + (self.maxy % 10 > 5 and 1 or 0)
         x = 0
         y = self.maxy*10//100
         win = self.scr.subpad(h, w, y, x)
@@ -122,8 +122,8 @@ class curses_wrapper:
         self.main = map_
 
         w = self.maxx*20//100
-        h = self.maxy*80//100 + (1 if self.maxy % 10 > 5 else 0)
-        x = self.maxx*80//100 + (1 if self.maxx % 5 != 0 else 0)
+        h = self.maxy*80//100 + (self.maxy % 10 > 5 and 1 or 0)
+        x = self.maxx*80//100 + (self.maxx % 5 != 0 and 1 or 0)
         y = self.maxy*10//100
         win = self.scr.subwin(h, w, y, x)
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': win, 'name': 'playerstats' }
@@ -229,8 +229,8 @@ class curses_wrapper:
         map_ = level.map
 
         # determine console coordinates to begin rendering according to map size
-        (conx, cony) = ((self.main['w'] - map_.w)//2 if map_.w < self.main['w'] else 0,
-                        (self.main['h'] - map_.h)//2 if map_.h < self.main['h'] else 0)
+        (conx, cony) = (map_.w < self.main['w'] and (self.main['w'] - map_.w)//2 or 0,
+                        map_.h < self.main['h'] and (self.main['h'] - map_.h)//2 or 0)
 
         # draw map tiles
         if util.debug:

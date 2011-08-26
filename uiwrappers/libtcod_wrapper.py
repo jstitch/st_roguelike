@@ -48,16 +48,16 @@ class libtcod_wrapper:
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': libtcod.console_new(w, h), 'name': 'messages' }
         self.messages = map_
 
-        w = width*80//100 + (1 if width % 5 != 0 else 0)
-        h = height*80//100 + (2 if height % 10 > 5 else 1)
+        w = width*80//100 + (width % 5 != 0 and 1 or 0)
+        h = height*80//100 + (height % 10 > 5 and 2 or 1)
         x = 0
         y = height*10//100
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': libtcod.console_new(w, h), 'name': 'main' }
         self.main = map_
 
         w = width*20//100
-        h = height*80//100 + (2 if height % 10 > 5 else 1)
-        x = width*80//100 + (1 if width % 5 != 0 else 0)
+        h = height*80//100 + (height % 10 > 5 and 2 or 1)
+        x = width*80//100 + (width % 5 != 0 and 1 or 0)
         y = height*10//100
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': libtcod.console_new(w, h), 'name': 'playerstats' }
         self.playerstats = map_
@@ -153,8 +153,8 @@ class libtcod_wrapper:
         map_ = level.map
 
         # determine console coordinates to begin rendering according to map size
-        (conx, cony) = ((self.main['w'] - map_.w)//2 if map_.w < self.main['w'] else 0,
-                        (self.main['h'] - map_.h)//2 if map_.h < self.main['h'] else 0)
+        (conx, cony) = (map_.w < self.main['w'] and (self.main['w'] - map_.w)//2 or 0,
+                        map_.h < self.main['h'] and (self.main['h'] - map_.h)//2 or 0)
 
         # draw map tiles
         for my, cy in map(None, range(miny, maxy), range(cony, map_.h + cony)):

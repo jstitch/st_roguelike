@@ -33,9 +33,9 @@ class Level:
         self.ismaraudable = False
 
         if branch['name'] == 'classrooms':
-            maptype = branch['maptypes'][0] if numlevel < 5 else branch['maptypes'][1]
+            maptype = numlevel < 5 and branch['maptypes'][0] or branch['maptypes'][1]
         elif branch['name'] == 'dungeons':
-            maptype = branch['maptypes'][0] if numlevel > -5 else branch['maptypres'][1]
+            maptype = numlevel > -5 and branch['maptypes'][0] or branch['maptypres'][1]
         elif branch['name'] == 'woods':
             maptype = branch['maptypes'][0]
         if numlevel > 10 or numlevel < -10:

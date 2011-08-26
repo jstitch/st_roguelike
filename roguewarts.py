@@ -6,8 +6,6 @@ roguewarts.py
 RogueWarts v0.1
 jnc
 20/jan/2011
-
-This code is under the GPLv3 License.
 '''
 
 import logging, logging.config, ConfigParser
