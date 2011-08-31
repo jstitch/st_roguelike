@@ -3,26 +3,26 @@
 roguewarts.py
 
 RogueWarts, the Harry Potter Roguelike Game
-JNC
-jstitch@gmail.com
-20/jan/2011
 
 RogueWarts may use different graphical libraries for displaying the
-game. Curses is supported, but also libtcod, which BTW also supports
-the engine behind the game itself.
+game. Curses is supported, but also libtcod, which BTW also gives
+support to the engine behind the game itself.
 
 Usage: python roguewarts.py [PARAMETERS]
 
 PARAMETERS:
 
-  -l ui_library_name        : to change UI library name (currently supporting libtcod (default) & curses)
+  -l ui_library_name        : to change UI library name (currently supporting
+                              libtcod (default) & curses)
 
   --library=ui_library_name : same as above
 
   --maximize                : maximize display in screen
 
-  --forcedim                : forces display size to maximum allowed by current screen
-                              (allows low-res screens to run the game - warning, very low res might not render things well)
+  --forcedim                : forces display size to maximum allowed by current
+                              screen (allows low-res screens to run
+                              the game - warning, very low res might
+                              not render things well)
 
   --debug                   : enable debug mode
 
@@ -45,6 +45,26 @@ This module also includes the following:
   function version           : Prints game current version information.
 
   main routine
+
+
+RogueWarts, the Harry Potter Roguelike Game
+Copyright (C) 2011 Javier Novoa C.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or any
+later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+JNC - jstitch@gmail.com
+20/jan/2011
 """
 
 import logging, logging.config, ConfigParser
@@ -63,6 +83,10 @@ def config_logger(filename = 'roguewarts.log'):
     Configure logging facility.
 
     Reads logging.conf for configurations.
+
+    Arguments:
+      filename : the name of the file to store the log into. Default:
+                 'roguewarts.log'
     """
     global log, loglevel
     try:
@@ -79,46 +103,44 @@ class RogueWarts:
     RogueWarts main class.
 
     Methods:
-
       __init__
-
       run
+      finish
 
     Variables:
-
       game
     """
     def __init__(self, uilib = "libtcod", uiparams = (False, False)):
         """
         Initialize the game engine, UI included.
+
+        Arguments:
+          uilib    : the name of the UI library to use. Default: 'libtcod'
+          uiparams : tuple with parameters for the UI lib (see ui.py
+                     doc for more info). Default: (False, False)
         """
         try:
             self.game = game.Game(uilib, uiparams)
-            self.game.new_game()
         except Exception as e:
             log.error(str(e))
-            try:
-                self.game.terminate()
-            except Exception:
-                pass
-            print str(e)
-            raise util.RoguewartsException("initerror:", e)
+            raise util.RoguewartsException("initerror:" + str(e))
         
     def run(self):
         """
         Run the game (main loop).
 
-        A game loop calls the update() method of the Game class. This
-        method's definition may vary, according to where in the game
-        we are: player configuration? main game development? etc.
+        A game loop calls the iterate() method of the Game class. This
+        method calls some other method which may vary, according to
+        where in the game we are: player configuration? main game?
+        etc.
 
         The loop is supposed to cleanly terminate when the game
         reaches an EXIT state.
         """
         log.info("ready to go!")
-        while self.game.state != game.STATES.EXIT:
+        while self.game.state != game.STATES['EXIT']:
             try:
-                self.game.update()
+                self.game.iterate()
             except KeyboardInterrupt:
                 pass
             except Exception as e:
@@ -126,6 +148,10 @@ class RogueWarts:
                 print str(e)
                 break
 
+    def finish(self):
+        """
+        Finish the game cleanly.
+        """
         try:
             self.game.terminate()
         except Exception as e:
@@ -162,7 +188,8 @@ def version():
     """
     Print version.
     """
-    print GAME_NAME, GAME_VERSION
+    print "version", GAME_VERSION
+    print GAME_NAME, "is under the GPLv3 License"
 
 
 #### MAIN ROUTINE ####
@@ -205,8 +232,14 @@ if __name__ == '__main__':
     # roguewarts
     try:
         rw = RogueWarts(library, (maximize, forcedim))
-    except util.RoguewartsException:
+    except util.RoguewartsException as e:
+        try:
+            rw.finish()
+        except Exception:
+            pass
+        print str(e)
         sys.exit(1)
 
     rw.run()
+    rw.finish()
     log.info("goodbye!")
