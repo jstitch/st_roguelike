@@ -1,6 +1,22 @@
-'''
+"""
 ui.py
-'''
+
+RogueWarts game UI logic.
+
+This module is intended to be the 'view' layer (in an MVC
+architecture).
+
+The UI of RogueWarts is managed by this module, but the real ui work
+is done by certain ui wrapper (in uiwrappers module), which should use
+certain ui library to implement all the UI functionality used in here.
+
+That's why the ui wrappers must follow certain 'interface', because
+this module uses ducktyping to interact with it (more info at the
+uiwrappers package documentation at uiwrappers/__init__.py).
+
+  class UI     : UI class, with methods for configguring the UI, rendering
+                 output and handling input by the user
+"""
 
 import logging
 import sys, game
@@ -8,24 +24,67 @@ import util
 
 log = logging.getLogger('roguewarts.ui')
 
-# minimum size of the window
-SCREEN_WIDTH = 105
-SCREEN_HEIGHT = 36
-
 class UI:
-    """UI class"""
-    def __init__(self, uilib, maximize, forcedim):
-        # Uses ducktyping to load the correct UI library. Needs a
-        # uiwrappers.library_wrapper lib with uilib_wrapper class implementing
-        # all same methods as libtcod_wrapper and curses_wrapper do (even
-        # though, libtcod is used also for other things in the game,
-        # independently of the UI thing). This gives the possibility to use
-        # any other UI library, like for example GTK or whatever, using
-        # libtcod in the background for the wonderfully implemented roguelike
-        # features of this library (also, curses & libtcod uses number of
-        # chars for coordinates/dimensions, while others may use pixels or
-        # anything elso, so a translation from chars to whatever should be
-        # necessary...)
+    """
+    UI class.
+
+    Since ducktyping is being used, almost any call to the ui wrapper
+    methods must be catched to avoid problems with poorly implemented
+    wrappers.
+
+    Methods:
+      __init__
+      close
+      is_closed
+      handle_input
+      refresh_message
+      refresh_map
+      flush
+      clear_obj
+
+    Variables:
+      ui
+      maxx, maxy
+      messages_queue
+    """
+
+    """Minimum screen width."""
+    SCREEN_WIDTH = 105
+
+    """Minimum screen height."""
+    SCREEN_HEIGHT = 36
+
+    def __init__(self, uilib, uiparams):
+        """
+        Initialize the UI.
+
+        Dinamically loads the correct UI library. Needs a
+        uiwrappers.library_wrapper lib with uilib_wrapper class
+        implementing all same methods as libtcod_wrapper and
+        curses_wrapper do (even though, libtcod is used also for other
+        things in the game, independently of the UI thing). This gives
+        the possibility to use any other UI library, like for example
+        GTK+ or whatever, using libtcod in the background for the
+        wonderfully implemented roguelike features of this library
+        (also, curses & libtcod uses number of chars for
+        coordinates/dimensions, while others may use pixels or
+        anything else, so a translation from chars to whatever should
+        be necessary inside the wrapper code...)
+
+        Arguments:
+          uilib    : name of the UI lib to use
+
+          uiparams : params for the UI lib. 2D tuple with the
+                     following params:
+                       maximize - asks the ui lib to maximize screen
+                                  (the sense of this depends on the
+                                  library capabilities)
+                       forcemindims - asks the ui lib to use all the
+                                      current screen space to
+                                      distribute the different areas
+                                      of the game, instead of staying
+                                      at their minimums
+        """
         try:
             __import__("uiwrappers." + uilib + "_wrapper")
             self.ui = getattr(sys.modules["uiwrappers." + uilib + "_wrapper"], uilib + "_wrapper")()
@@ -42,7 +101,7 @@ class UI:
 
         # finally, initialize UI screen
         try:
-            self.maxx, self.maxy = self.ui.init(SCREEN_WIDTH, SCREEN_HEIGHT, maximize, forcedim)
+            self.maxx, self.maxy = self.ui.init(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, *uiparams)
         except AttributeError as e:
             self.ui.close()
             log.critical(str(e))
@@ -56,8 +115,8 @@ class UI:
         if (self.maxx, self.maxy) < (0, 0):
             self.ui.close()
             log.critical("Screen needs to be at least (%d, %d). Current size is (%d, %d)" %
-                         (SCREEN_WIDTH, SCREEN_HEIGHT, self.maxx * -1, self.maxy * -1))
-            raise Exception("ERROR: screen size is too low, you need at least (%d, %d)" % (SCREEN_WIDTH, SCREEN_HEIGHT))
+                         (self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.maxx * -1, self.maxy * -1))
+            raise Exception("ERROR: screen size is too low, you need at least (%d, %d)" % (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
         if util.debug:
             try:
@@ -74,7 +133,9 @@ class UI:
         log.debug("Inventory console: %s" % str(self.ui.inventory))
 
     def close(self):
-        """Closes UI"""
+        """
+        Close UI cleanly.
+        """
         try:
             self.ui.close()
         except AttributeError as e:
@@ -82,7 +143,12 @@ class UI:
             raise AttributeError("ERROR: could not close UI")
 
     def is_closed(self):
-        """Detects if UI has been closed by the user"""
+        """
+        Detect if UI has been closed by the user.
+
+        Returns:
+          boolean telling if UI has been closed or not
+        """
         try :
             return self.ui.is_closed()
         except AttributeError as e:
@@ -90,7 +156,15 @@ class UI:
             raise AttributeError("ERROR: could not detect if UI is closed")
 
     def handle_input(self):
-        """Handle user input"""
+        """
+        Handle user input.
+
+        The ui method for catching the input must be in non-blocking
+        mode
+
+        Returns:
+          ASCII code for pressed key or libtcod code for control key
+        """
         try:
             return self.ui.getkey()
         except AttributeError as e:
@@ -98,9 +172,19 @@ class UI:
             raise AttributeError("ERROR: could not get key from UI")
 
     def refresh_message(self, queue=[]):
-        """Refresh messages area"""
+        """
+        Refresh messages area.
+
+        The ui pops the last message in the queue, divides it so it
+        fits in a row of the messages area and renders the message
+        (with a given color) at the bottom of it, pushing the last
+        messages up
+
+        Arguments:
+          queue : queue of util.Message objects
+        """
         try:
-            self.queue = queue # backup queue
+            self.messages_queue = queue # backup queue
             self.ui.message(queue)
             self.flush('messages')
         except AttributeError as e:
@@ -108,7 +192,19 @@ class UI:
             raise AttributeError("ERROR: could not print messages")
 
     def refresh_map(self, world, x, y):
-        """Render current level"""
+        """
+        Render current level.
+
+        Tries to render the map centered in certain given
+        coordinates. If not possible, the map is rendered anyway, but
+        drawing it in a way that such coordinates get rendered
+        offsetted to some side of the rendered map
+
+        Arguments:
+          world : the world.World object where the current level and
+                  map lives
+          x, y  : intended center coordinates of the map
+        """
         try:
             if x < 0 or y < 0 or x > world.cur_level.map.w - 1 or y > world.cur_level.map.h - 1:
                 raise util.RoguewartsException("ERROR: char out of map bounds! (x=%d,y=%d) when max map is (%d,%d)" %
@@ -143,8 +239,8 @@ class UI:
                              y - conarea_h//2 or
                              level.map.h - conarea_h)
                             or 0) or 0)
-            (maxx, maxy) = (level.map.w <= conarea_w and level.map.w or conarea_w + minx,
-                            level.map.h <= conarea_h and level.map.h or conarea_h + miny)
+            (maxx, maxy) = (level.map.w if level.map.w <= conarea_w else conarea_w + minx,
+                            level.map.h if level.map.h <= conarea_h else conarea_h + miny)
 
             # draw objects in map...
 
@@ -158,7 +254,13 @@ class UI:
         self.flush('map')
 
     def flush(self, area='all'):
-        """Flush screen"""
+        """
+        Flush screen.
+
+        Arguments:
+          area : the name of the area to refresh, or 'all' to refresh
+          all the screen
+        """
         try:
             self.ui.flush(area)
         except AttributeError as e:
@@ -166,5 +268,10 @@ class UI:
             raise AttributeError("ERROR: could not flush UI screen")
 
     def clear_obj(self, object):
-        """Clear some object in display"""
+        """
+        Clear some object in display.
+
+        Arguments:
+          object : the object to clear from the screen
+        """
         pass
