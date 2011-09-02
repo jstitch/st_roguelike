@@ -3,9 +3,6 @@ ui.py
 
 RogueWarts game UI logic.
 
-This module is intended to be the 'view' layer (in an MVC
-architecture).
-
 The UI of RogueWarts is managed by this module, but the real ui work
 is done by certain ui wrapper (in uiwrappers module), which should use
 certain ui library to implement all the UI functionality used in here.

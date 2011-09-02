@@ -10,7 +10,7 @@ Even if roguewarts.py holds the main routine and loop, game.py is
 intented to be the Control layer.
 
 Following the analogy, ui.py would be the View layer (supported by
-some specific ui wrapper).
+some specific ui wrapper), but including the input handling logic too.
 
 And the rest of the classes (level.py, map.py, ai.py, etc.) would be
 the Model layer.
