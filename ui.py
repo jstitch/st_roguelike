@@ -41,6 +41,7 @@ class UI:
 
     Variables:
       ui
+      areas
       maxx, maxy
       messages_queue
     """
@@ -96,9 +97,22 @@ class UI:
             log.critical("Can't initialize ui: %s" % str(e))
             raise Exception("ERROR: can't initialize ui")
 
+        # Screen areas
+        self.areas = {}
+        # main
+        self.areas['main']        = { 'con': None, 'name': '', 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
+        # messages
+        self.areas['messages']    = { 'con': None, 'name': '', 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
+        # player stats
+        self.areas['playerstats'] = { 'con': None, 'name': '', 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
+        # game stats
+        self.areas['gamestats']   = { 'con': None, 'name': '', 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
+        # inventory
+        self.areas['inventory']   = { 'con': None, 'name': '', 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
+
         # finally, initialize UI screen
         try:
-            self.maxx, self.maxy = self.ui.init(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, *uiparams)
+            self.maxx, self.maxy = self.ui.init(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.areas, *uiparams)
         except AttributeError as e:
             self.ui.close()
             log.critical(str(e))
@@ -117,17 +131,17 @@ class UI:
 
         if util.debug:
             try:
-                self.ui.test()
+                self.ui.test(self.areas)
             except Exception as e:
                 self.ui.close()
                 log.critical("Error testing screen: %s" % str(e))
                 raise Exception("ERROR: at screen test")
         log.debug("Window dimensions: (%s, %s)" % (str(self.maxx), str(self.maxy)))
-        log.debug("Main console: %s" % str(self.ui.main))
-        log.debug("Message console: %s" % str(self.ui.messages))
-        log.debug("Player stats console: %s" % str(self.ui.playerstats))
-        log.debug("Game stats console: %s" % str(self.ui.gamestats))
-        log.debug("Inventory console: %s" % str(self.ui.inventory))
+        log.debug("Main console: %s" % str(self.areas['main']))
+        log.debug("Message console: %s" % str(self.areas['messages']))
+        log.debug("Player stats console: %s" % str(self.areas['playerstats']))
+        log.debug("Game stats console: %s" % str(self.areas['gamestats']))
+        log.debug("Inventory console: %s" % str(self.areas['inventory']))
 
     def close(self):
         """
@@ -136,6 +150,7 @@ class UI:
         try:
             self.ui.close()
         except AttributeError as e:
+            self.ui.close()
             log.critical(str(e))
             raise AttributeError("ERROR: could not close UI")
 
@@ -149,6 +164,7 @@ class UI:
         try :
             return self.ui.is_closed()
         except AttributeError as e:
+            self.ui.close()
             log.critical(str(e))
             raise AttributeError("ERROR: could not detect if UI is closed")
 
@@ -165,6 +181,7 @@ class UI:
         try:
             return self.ui.getkey()
         except AttributeError as e:
+            self.ui.close()
             log.critical(str(e))
             raise AttributeError("ERROR: could not get key from UI")
 
@@ -182,9 +199,10 @@ class UI:
         """
         try:
             self.messages_queue = queue # backup queue
-            self.ui.message(queue)
-            self.flush('messages')
+            self.ui.message(queue, self.areas['messages'])
+            self.flush(self.areas['messages'])
         except AttributeError as e:
+            self.ui.close()
             log.critical(str(e))
             raise AttributeError("ERROR: could not print messages")
 
@@ -210,8 +228,9 @@ class UI:
             # to render correctly, we need the character dimensions of the
             # area where the map is to be drawn
             try:
-                conarea_w, conarea_h = self.ui.getareadims()
+                conarea_w, conarea_h = (self.areas['main']['w'], self.areas['main']['h'])
             except Exception as e:
+                self.ui.close()
                 log.critical(str(e))
                 raise Exception("ERROR: could not determine draw area dimensions")
 
@@ -242,13 +261,14 @@ class UI:
             # draw objects in map...
 
             # sent to ui lib
-            self.ui.render(level, x, y, minx, miny, maxx, maxy)
+            self.ui.render(level, x, y, minx, miny, maxx, maxy, self.areas['main'])
 
         except AttributeError as e:
+            self.ui.close()
             log.critical(str(e))
             raise AttributeError("ERROR: could not render level")
 
-        self.flush('map')
+        self.flush(self.areas['main'])
 
     def flush(self, area='all'):
         """
@@ -259,8 +279,13 @@ class UI:
           all the screen
         """
         try:
-            self.ui.flush(area)
+            if area == 'all':
+                for ar in areas:
+                    self.ui.flush(ar)
+            else:
+                self.ui.flush(area)
         except AttributeError as e:
+            self.ui.close()
             log.critical(str(e))
             raise AttributeError("ERROR: could not flush UI screen")
 

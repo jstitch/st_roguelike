@@ -1,6 +1,6 @@
-'''
+"""
 libtcod_wrapper.py
-'''
+"""
 
 import libtcod.libtcodpy as libtcod
 import textwrap
@@ -12,12 +12,17 @@ log = logging.getLogger('roguewarts.curses_wrapper')
 LIMIT_FPS = 20
 
 class libtcod_wrapper:
-    """'Interface' for using libtcod as UI library"""
+    """'Interface' for using libtcod as UI library."""
     def __init__(self):
+        """"Init interface."""
         self.con = None
 
-    def init(self, width, height, maximize, forcedim=False):
-        """Intialization. Returns screen size in (x,y) tuple"""
+    def init(self, width, height, areas, maximize, forcedim=False):
+        """
+        Intialize interface.
+
+        Returns screen size in (x,y) tuple.
+        """
         libtcod.console_set_custom_font(fontFile='data/arial12x12.png', flags=libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 
         if forcedim:
@@ -29,69 +34,58 @@ class libtcod_wrapper:
         libtcod.console_init_root(w=width, h=height, title='Roguewarts', fullscreen=maximize)
         libtcod.sys_set_fps(LIMIT_FPS)
 
-        # main console
-        self.main = { 'con': None, 'name': '', 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
-        # messages console
-        self.messages = { 'con': None, 'name': '', 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
-        # player stats console
-        self.playerstats = { 'con': None, 'name': '', 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
-        # game stats console
-        self.gamestats = { 'con': None, 'name': '', 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
-        # inventory console
-        self.inventory = { 'con': None, 'name': '', 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
-
         # consoles
         w = width
         h = height*10//100
         x = 0
         y = 0
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': libtcod.console_new(w, h), 'name': 'messages' }
-        self.messages = map_
+        areas['messages'] = map_
 
-        w = width*80//100 + (width % 5 != 0 and 1 or 0)
-        h = height*80//100 + (height % 10 > 5 and 2 or 1)
+        w = width*80//100 + (1 if width % 5 != 0 else 0)
+        h = height*80//100 + (2 if height % 10 > 5 else 1)
         x = 0
         y = height*10//100
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': libtcod.console_new(w, h), 'name': 'main' }
-        self.main = map_
+        areas['main'] = map_
 
         w = width*20//100
-        h = height*80//100 + (height % 10 > 5 and 2 or 1)
-        x = width*80//100 + (width % 5 != 0 and 1 or 0)
+        h = height*80//100 + (2 if height % 10 > 5 else 1)
+        x = width*80//100 + (1 if width % 5 != 0 else 0)
         y = height*10//100
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': libtcod.console_new(w, h), 'name': 'playerstats' }
-        self.playerstats = map_
+        areas['playerstats'] = map_
 
         w = width
         h = height*10//100
         x = 0
         y = height*90//100 + 1
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': libtcod.console_new(w, h), 'name': 'gamestats' }
-        self.gamestats = map_
+        areas['gamestats'] = map_
 
         w = width//2
         h = 3*height//4
         x = width//4
         y = height//8
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': libtcod.console_new(w, h), 'name': 'inventory' }
-        self.inventory = map_
+        areas['inventory'] = map_
 
         return (width, height)
 
-    def getareadims(self):
-        """Get main area dimensions"""
-        return (self.main['w'], self.main['h'])
+    def getareadims(self, area):
+        """Get area dimensions."""
+        return (area['w'], area['h'])
 
     def close(self):
-        """Termination"""
+        """Terminate."""
         pass
 
     def is_closed(self):
-        """If user closes window"""
+        """Tells if user closes window."""
         return libtcod.console_is_window_closed()
 
     def getkey(self):
-        """Get a key"""
+        """Get a key."""
         key = libtcod.console_check_for_keypress(True)
         if key.vk == libtcod.KEY_NONE:
             return None
@@ -100,34 +94,18 @@ class libtcod_wrapper:
         return chr(key.c)
 
     def flush(self, area):
-        """Flush screen"""
-        if area == 'all' or area == 'map':
-            libtcod.console_blit(self.main['con'],
-                                 0, 0, self.main['w'], self.main['h'],
-                                 0, self.main['x'], self.main['y'])
-        if area == 'all' or area == 'messages':
-            libtcod.console_blit(self.messages['con'],
-                                 0, 0, self.messages['w'], self.messages['h'],
-                                 0, self.messages['x'], self.messages['y'])
-        if area == 'all' or area == 'stats':
-            libtcod.console_blit(self.playerstats['con'],
-                                 0, 0, self.playerstats['w'], self.playerstats['h'],
-                                 0, self.playerstats['x'], self.playerstats['y'])
-            libtcod.console_blit(self.gamestats['con'],
-                                 0, 0, self.gamestats['w'], self.gamestats['h'],
-                                 0, self.gamestats['x'], self.gamestats['y'])
-        if area == 'all' or area == 'inventory':
-            libtcod.console_blit(self.inventory['con'],
-                                 0, 0, self.inventory['w'], self.inventory['h'],
-                                 0, self.inventory['x'], self.inventory['y'])
+        """Flush screen."""
+        libtcod.console_blit(area['con'],
+                             0, 0, area['w'], area['h'],
+                             0, area['x'], area['y'])
         libtcod.console_flush()
 
-    def message(self, queue):
-        """Display message queue in the message area"""
-        libtcod.console_clear(self.messages['con'])
+    def message(self, queue, mess_area):
+        """Display message queue in the message area."""
+        libtcod.console_clear(mess_area['con'])
 
         qmess = []
-        for i in range(self.messages['h']):
+        for i in range(mess_area['h']):
             try:
                 qmess.append(queue[(i + 1) * -1])
             except IndexError:
@@ -135,26 +113,26 @@ class libtcod_wrapper:
 
         qlines = []
         for mess in qmess:
-            str_lines = textwrap.wrap(mess.message, self.messages['w'])
+            str_lines = textwrap.wrap(mess.message, mess_area['w'])
             qlines.extend([util.Message(line, mess.properties) for line in str_lines])
 
-        for i in range(self.messages['h']):
+        for i in range(mess_area['h']):
             try:
-                libtcod.console_set_foreground_color(self.messages['con'], getcolorbyname(qlines[i].properties['color']))
-                libtcod.console_print_left(self.messages['con'], 0, self.messages['h'] - i - 1, libtcod.BKGND_NONE, qlines[i].message)
-                self.flush('messages')
+                libtcod.console_set_foreground_color(mess_area['con'], getcolorbyname(qlines[i].properties['color']))
+                libtcod.console_print_left(mess_area['con'], 0, mess_area['h'] - i - 1, libtcod.BKGND_NONE, qlines[i].message)
+                self.flush(mess_area)
             except IndexError:
                 break
 
-    def render(self, level, x, y, minx, miny, maxx, maxy):
-        """Render current level level"""
-        libtcod.console_clear(self.main['con'])
+    def render(self, level, x, y, minx, miny, maxx, maxy, main_area):
+        """Render current level."""
+        libtcod.console_clear(main_area['con'])
 
         map_ = level.map
 
         # determine console coordinates to begin rendering according to map size
-        (conx, cony) = (map_.w < self.main['w'] and (self.main['w'] - map_.w)//2 or 0,
-                        map_.h < self.main['h'] and (self.main['h'] - map_.h)//2 or 0)
+        (conx, cony) = ((main_area['w'] - map_.w)//2 if map_.w < main_area['w'] else 0,
+                        (main_area['h'] - map_.h)//2 if map_.h < main_area['h'] else 0)
 
         # draw map tiles
         for my, cy in map(None, range(miny, maxy), range(cony, map_.h + cony)):
@@ -172,37 +150,37 @@ class libtcod_wrapper:
                 # it's visible
                 else:
                     # draw map tile with char/color <- as is since it is visible
-                    libtcod.console_set_back(self.main['con'], cx, cy, getcolorbyname(tile.type['color']), libtcod.BKGND_SET)
-                    libtcod.console_set_back(self.main['con'], conx + x - minx, cony + y - miny, getcolorbyname('red'), libtcod.BKGND_SET)
+                    libtcod.console_set_back(main_area['con'], cx, cy, getcolorbyname(tile.type['color']), libtcod.BKGND_SET)
+                    libtcod.console_set_back(main_area['con'], conx + x - minx, cony + y - miny, getcolorbyname('red'), libtcod.BKGND_SET)
                     # since now it's visible, mark it as explored
                     tile.explored = True
 
         # draw objects in map...
 
         # blit contents
-        self.flush('map')
+        self.flush(main_area)
 
-    def test(self):
-        """Test routine"""
+    def test(self, areas):
+        """Test routine."""
         # blit messages
-        self.test_area(self.messages, libtcod.red, libtcod.black)
+        self.test_area(areas['messages'], libtcod.red, libtcod.black)
 
         # blit main
-        self.test_area(self.main, libtcod.yellow, libtcod.black)
+        self.test_area(areas['main'], libtcod.yellow, libtcod.black)
 
         # blit playerstats
-        self.test_area(self.playerstats, libtcod.green, libtcod.black)
+        self.test_area(areas['playerstats'], libtcod.green, libtcod.black)
 
         # blit gamestats
-        self.test_area(self.gamestats, libtcod.blue, libtcod.black)
+        self.test_area(areas['gamestats'], libtcod.blue, libtcod.black)
 
         # blit inventory
-        self.test_area(self.inventory, libtcod.orange, libtcod.black)
+        self.test_area(areas['inventory'], libtcod.orange, libtcod.black)
 
         libtcod.console_credits()
 
     def test_area(self, area, fcolor, bcolor):
-        """Draw routines to test game areas"""
+        """Draw routines to test game areas."""
         libtcod.console_set_background_color(area['con'], bcolor)
         libtcod.console_set_foreground_color(area['con'], fcolor)
         libtcod.console_clear(area['con'])
@@ -214,5 +192,5 @@ class libtcod_wrapper:
                              0, area['x'], area['y'])
 
 def getcolorbyname(strcolorname):
-    """Get libtcod color from name"""
+    """Get libtcod color from name."""
     return getattr(libtcod, strcolorname, libtcod.white)

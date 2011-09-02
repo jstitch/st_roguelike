@@ -1,6 +1,6 @@
-'''
+"""
 curses_wrapper.py
-'''
+"""
 
 import curses
 import textwrap
@@ -18,7 +18,7 @@ log = logging.getLogger('roguewarts.curses_wrapper')
 # certain changes in the libtcod sourcode may allow this (note that this would
 # only be necessary in the 'server' on which the game would run).
 class curses_wrapper:
-    """'Interface' for using curses as UI library"""
+    """'Interface' for using curses as UI library."""
 
     # http://docs.python.org/library/curses.html#constants
     KEY_MAP = {
@@ -66,10 +66,15 @@ class curses_wrapper:
         }
 
     def __init__(self):
+        """Init interface."""
         self.scr = None
 
-    def init(self, minwidth, minheight, maximize=False, forcemindims=False):
-        """Intialization. Returns screen size in (y,x) tuple."""
+    def init(self, minwidth, minheight, areas, maximize=False, forcemindims=False):
+        """
+        Intialize interface.
+
+        Returns screen size in (y,x) tuple.
+        """
         self.scr = curses.initscr()
         curses.noecho()
         curses.cbreak()
@@ -93,17 +98,6 @@ class curses_wrapper:
         for color, v in curses_wrapper.COLORS.iteritems():
             curses.init_pair(v['n'], v['fg'], v['bg'])
 
-        # main console
-        self.main = { 'con': None, 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
-        # messages console
-        self.messages = { 'con': None, 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
-        # player stats console
-        self.playerstats = { 'con': None, 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
-        # game stats console
-        self.gamestats = { 'con': None, 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
-        # inventory console
-        self.inventory = { 'con': None, 'w': 0, 'h': 0, 'x': 0, 'y': 0 }
-
         # consoles
         w = self.maxx
         h = self.maxy*10//100
@@ -111,23 +105,23 @@ class curses_wrapper:
         y = 0
         win = self.scr.subwin(h, w, y, x)
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': win, 'name': 'messages' }
-        self.messages = map_
+        areas['messages'] = map_
 
-        w = self.maxx*80//100 + (self.maxx % 5 != 0 and 1 or 0)
-        h = self.maxy*80//100 + (self.maxy % 10 > 5 and 1 or 0)
+        w = self.maxx*80//100 + (1 if self.maxx % 5 != 0 else 0)
+        h = self.maxy*80//100 + (1 if self.maxy % 10 > 5 else 0)
         x = 0
         y = self.maxy*10//100
         win = self.scr.subpad(h, w, y, x)
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': win, 'name': 'main' }
-        self.main = map_
+        areas['main'] = map_
 
         w = self.maxx*20//100
-        h = self.maxy*80//100 + (self.maxy % 10 > 5 and 1 or 0)
-        x = self.maxx*80//100 + (self.maxx % 5 != 0 and 1 or 0)
+        h = self.maxy*80//100 + (1 if self.maxy % 10 > 5 else 0)
+        x = self.maxx*80//100 + (1 if self.maxx % 5 != 0 else 0)
         y = self.maxy*10//100
         win = self.scr.subwin(h, w, y, x)
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': win, 'name': 'playerstats' }
-        self.playerstats = map_
+        areas['playerstats'] = map_
 
         w = self.maxx
         h = self.maxy*10//100
@@ -135,7 +129,7 @@ class curses_wrapper:
         y = self.maxy*90//100
         win = self.scr.subwin(h, w, y, x)
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': win, 'name': 'gamestats' }
-        self.gamestats = map_
+        areas['gamestats'] = map_
 
         w = self.maxx//2
         h = 3*self.maxy//4
@@ -143,26 +137,26 @@ class curses_wrapper:
         y = self.maxy//8
         win = self.scr.subwin(h, w, y, x)
         map_ = { 'w': w, 'h': h, 'x': x, 'y': y, 'con': win, 'name': 'inventory' }
-        self.inventory = map_
+        areas['inventory'] = map_
 
         return (self.maxx,self.maxy)
 
-    def getareadims(self):
-        """Get main area dimensions"""
-        return (self.main['w'], self.main['h'])
+    def getareadims(self, area):
+        """Get area dimensions."""
+        return (area['w'], area['h'])
 
     def close(self):
-        """Termination"""
+        """Terminate."""
         curses.nocbreak()
         curses.echo()
         curses.endwin()
 
     def is_closed(self):
-        """If user closes window"""
+        """Tells if user closes window."""
         return False
 
     def getkey(self):
-        """Get a key"""
+        """Get a key."""
         key = self.scr.getch()
         if key == curses.ERR:
             return None
@@ -174,33 +168,15 @@ class curses_wrapper:
         return chr(key)
 
     def flush(self, area):
-        """Flush screen"""
-        if area == 'all':
-            self.flush('messages')
-            self.flush('map')
-            self.flush('stats')
-            self.flush('inventory')
-            self.scr.refresh()
+        """Flush screen."""
+        area['con'].refresh()
 
-        elif area == 'messages':
-            self.messages['con'].refresh()
-
-        elif area == 'map':
-            self.main['con'].refresh()
-
-        elif area == 'stats':
-            self.playerstats['con'].refresh()
-            self.gamestats['con'].refresh()
-
-        elif area == 'inventory':
-            self.inventory['con'].refresh()
-
-    def message(self, queue):
-        """Display a message queue in the message area"""
-        self.messages['con'].clear()
+    def message(self, queue, mess_area):
+        """Display a message queue in the message area."""
+        mess_area['con'].clear()
 
         qmess = []
-        for i in range(self.messages['h']):
+        for i in range(mess_area['h']):
             try:
                 qmess.append(queue[(i + 1) * -1])
             except IndexError:
@@ -208,29 +184,29 @@ class curses_wrapper:
 
         qlines = []
         for mess in qmess:
-            str_lines = textwrap.wrap(mess.message, self.messages['w'])
+            str_lines = textwrap.wrap(mess.message, mess_area['w'])
             qlines.extend([util.Message(line, mess.properties) for line in str_lines])
 
-        for i in range(self.messages['h']):
+        for i in range(mess_area['h']):
             try:
-                self.messages['con'].addstr(self.messages['h'] - i - 1,
-                                            0,
-                                            qlines[i].message,
-                                            curses.color_pair(curses_wrapper.COLORS[qlines[i].properties['color']]['n']))
+                mess_area['con'].addstr(mess_area['h'] - i - 1,
+                                        0,
+                                        qlines[i].message,
+                                        curses.color_pair(curses_wrapper.COLORS[qlines[i].properties['color']]['n']))
             except IndexError:
                 break
 
-        self.flush('messages')
+        self.flush(mess_area)
 
-    def render(self, level, x, y, minx, miny, maxx, maxy):
-        """Render current level"""
-        self.main['con'].clear()
+    def render(self, level, x, y, minx, miny, maxx, maxy, main_area):
+        """Render current level."""
+        main_area['con'].clear()
 
         map_ = level.map
 
         # determine console coordinates to begin rendering according to map size
-        (conx, cony) = (map_.w < self.main['w'] and (self.main['w'] - map_.w)//2 or 0,
-                        map_.h < self.main['h'] and (self.main['h'] - map_.h)//2 or 0)
+        (conx, cony) = ((main_area['w'] - map_.w)//2 if map_.w < main_area['w'] else 0,
+                        (main_area['h'] - map_.h)//2 if map_.h < main_area['h'] else 0)
 
         # draw map tiles
         if util.debug:
@@ -253,9 +229,9 @@ class curses_wrapper:
                 else:
                     # draw map tile with char/color <- as is since it is visible
                     try:
-                        self.main['con'].addstr(cy, cx, tile.type['char'],
+                        main_area['con'].addstr(cy, cx, tile.type['char'],
                                                 curses.color_pair(curses_wrapper.COLORS[tile.type['color']]['n']))
-                        self.main['con'].addstr(cony + y - miny, conx + x - minx, '@',
+                        main_area['con'].addstr(cony + y - miny, conx + x - minx, '@',
                                                 curses.color_pair(curses_wrapper.COLORS['red']['n']))
                     except Exception as e:
                         pass
@@ -264,31 +240,31 @@ class curses_wrapper:
         if util.debug:
             log.debug("aparecio none %d veces" % c)
 
-        self.flush('map')
+        self.flush(main_area)
 
-    def test(self):
-        """Test routine"""
+    def test(self, areas):
+        """Test routine."""
         self.scr.clear()
 
         # blit messages
-        self.test_area(self.messages, 'red', '')
+        self.test_area(areas['messages'], 'red', '')
 
         # blit main
-        self.test_area(self.main, 'yellow', '')
+        self.test_area(areas['main'], 'yellow', '')
 
         # blit playerstats
-        self.test_area(self.playerstats, 'green', '')
+        self.test_area(areas['playerstats'], 'green', '')
 
         # blit gamestats
-        self.test_area(self.gamestats, 'blue', '')
+        self.test_area(areas['gamestats'], 'blue', '')
 
         # blit inventory
-        self.test_area(self.inventory, 'cyan', '')
+        self.test_area(areas['inventory'], 'cyan', '')
 
         self.scr.addstr(self.maxy//2, self.maxx//2, curses.__name__)
 
     def test_area(self, area, fcolor, bcolor):
-        """Draw routines to test game areas"""
+        """Draw routines to test game areas."""
         area['con'].bkgd(' ', curses.A_DIM)
         area['con'].box()
         area['con'].addstr(0, area['w'] // 2 - (len(area['name']) // 2), area['name'], curses.color_pair(curses_wrapper.COLORS[fcolor]['n']))

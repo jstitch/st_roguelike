@@ -53,7 +53,8 @@ These are the methods that the UI wrapper should have:
 
   init        initializes interface: UI init, screen dimensions, input init,
               game areas init (main area, messages area, player stats
-              area, game stats area, inventory area)
+              area, game stats area, inventory area). Receives any
+              additional parameters for the UI
 
               Should return a tuple with screen size (y,x)
 
@@ -63,11 +64,11 @@ These are the methods that the UI wrapper should have:
 
   is_closed   tells if UI is requested to be closed by user
 
-  getkey      returns an input key by the user. ASCII code for alphanumeric
-              keys, special mapped keys for control keys. It uses
-              libtcod library to map the library-dependent code to a
-              libtcod similar one (see curses_wrapper.KEY_MAP for an
-              example)
+  getkey      returns an input key by the user. Must catch the key pressed
+              in a non-blocking way. ASCII code for alphanumeric keys,
+              special mapped keys for control keys. It uses libtcod
+              library to map the library-dependent code to a libtcod
+              similar one (see curses_wrapper.KEY_MAP for an example)
 
   flush       flushes screen or an specific area of it
 
@@ -96,4 +97,28 @@ These are the variables that the UI wrapper should have:
   gamestats   the game stats area (where the stats relative to the overall game are given)
 
   inventory   the inventory area (where the inventory of the player is displayed)
+
+
+The default layout of the screen areas (at least for the libtcod and
+curses wrappers) is as follows:
+
++--------------------------------------------------------+
+| messages                                               |
++----------------------------------------------+---------+
+| main area                                    | player  |
+|                                              |  stats  |
+|           +----------------------------+     |         |
+|           | inventory                  |     |         |
+|           |                            |     |         |
+|           |                            |     |         |
+|           |                            |     |         |
+|           |                            |     |         |
+|           |                            |     |         |
+|           |                            |     |         |
+|           |                            |     |         |
+|           +----------------------------+     |         |
+|                                              |         |
++----------------------------------------------+---------+
+| game stats                                             |
++--------------------------------------------------------+
 """
