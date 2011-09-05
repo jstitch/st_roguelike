@@ -86,18 +86,27 @@ These are the methods that the UI wrapper should have:
               each area and other specific information
 
 
-These are the variables that the UI wrapper should have:
+The wrapper also should know how to manage a dictionary of 'areas',
+which define each area in the screen. The definition is:
 
-  main        the main area of the game (where main action is drawn, and the game map)
+area = {'con' : None, # a manager for the area, UI library specific
+        'name': '',   # the name (id) of the area
+        'w'   : 0,    # width of the area in characters
+        'h'   : 0,    # height of the area in characters
+        'x'   : 0,    # the x coordinate (in characters) of the top
+                      # left corner of the area
+        'y': 0        # the y coordinate (in characters) of the top
+                      # left corner of the area
+        }
 
-  messages    the messages area (where the game gives information to the user)
+More info on this areas on ui.py and each uiwrappers source code:
 
-  playerstats the palyer stats area (where the stats relative to the player are given)
-
-  gamestats   the game stats area (where the stats relative to the overall game are given)
-
-  inventory   the inventory area (where the inventory of the player is displayed)
-
+Areas:
+  main         - game map
+  messages     - messages for the user from the game
+  player stats - stats for the current player
+  game stats   - stats for the overall game
+  inventory    - where the inventory appears
 
 The default layout of the screen areas (at least for the libtcod and
 curses wrappers) is as follows:
