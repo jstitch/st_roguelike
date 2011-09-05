@@ -1,12 +1,14 @@
 """
 object.py
 
-RogueWarts, object class
+RogueWarts, object class and components
 
-This is the base class for any object living in the World, defining
-things such as its position, color, etc.
 
-  class Object : base Object class
+  class Object  : base Object class
+
+  class Fighter : fighter component
+
+  class Item    : item component
 """
 
 import logging
@@ -17,6 +19,9 @@ log = logging.getLogger('roguewarts.object')
 class Object:
     """
     Object class.
+
+    This is the base class for any object living in the World,
+    defining things such as its position, color, etc.
 
     Methods:
       __init__
@@ -61,4 +66,24 @@ class Object:
 
     def clear(self):
         """Clear object."""
+        pass
+
+class Fighter:
+    """
+    Fighter component class.
+
+    This class should be composited in some monster or player Object
+    to define that it can fight, be hitted, etc.
+    """
+    def __init__(self):
+        pass
+
+class Item:
+    """
+    Item component class.
+
+    This class should be composited in some item Object to define that
+    it can be picked, used, etc.
+    """
+    def __init__(self):
         pass
