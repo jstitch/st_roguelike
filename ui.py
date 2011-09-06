@@ -40,10 +40,10 @@ class UI:
       clear_obj
 
     Variables:
-      ui
-      areas
-      maxx, maxy
-      messages_queue
+      ui             - the UI lib wrapper
+      areas          - the areas for displaying things on screen
+      maxx, maxy     - screen max coordinates according to UI
+      messages_queue - queue of messages for the user
     """
 
     """Minimum screen width."""

@@ -1,8 +1,7 @@
 """
 object.py
 
-RogueWarts, object class and components
-
+RogueWarts, object class and components.
 
   class Object  : base Object class
 
@@ -36,17 +35,21 @@ class Object:
       name
       blocks
     """
-    def __init__(self, x = -1, y = -1, char, color, name, blocks = False):
+    def __init__(self, char, color, name, x = -1, y = -1, blocks = False,
+                 fighter=None, ai=None, item=None):
         """
         Initialize object.
 
         Arguments:
-          x,y    : coordinates in the level for the object
-          char   : character representing the object
-          color  : color to pain the character in screen
-          name   : name to be used for description of the object
-          blocks : whether the objects blocks the pass of
-                   player/monsters or not (default: NO)
+          x,y     : coordinates in the level for the object
+          char    : character representing the object
+          color   : color to pain the character in screen
+          name    : name to be used for description of the object
+          blocks  : whether the objects blocks the pass of
+                    player/monsters or not (default: NO)
+          fighter : fighter component, if object is a monster/player
+          ai      : ai component, if object is a monster
+          item    : item component, if object is a item
         """
         self.x = x
         self.y = y

@@ -108,7 +108,7 @@ class RogueWarts:
       finish
 
     Variables:
-      game
+      game - the game engine
     """
     def __init__(self, uilib = "libtcod", uiparams = (False, False)):
         """

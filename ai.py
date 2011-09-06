@@ -6,11 +6,12 @@ RogueWarts, AI classes.
 This classes should be composited in some monster Object to define its
 behaviour.
 
-  class BasicMonster
-  class ConfusedMonster
+  class BasicMonster    : base class for monster AI
+
+  class ConfusedMonster : defines the AI for a confused monster
 """
 
-class BasicMonstar:
+class BasicMonster:
     """
     Basic Monster AI class.
     """
