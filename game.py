@@ -313,20 +313,20 @@ class Gameplay:
         # RIGHT-UP
         elif player_action == tcod.KEY_KP9:
             if self.engine.curp.x < self.engine.curl.map.w - 1 and self.engine.curp.y > 0:
-                self.engine.curp.x -= 1
+                self.engine.curp.x += 1
                 self.engine.curp.y -= 1
                 return self.ACTIONS['took-turn']
         # LEFT-DOWN
         elif player_action == tcod.KEY_KP1:
             if self.engine.curp.x > 0 and self.engine.curp.y < self.engine.curl.map.h - 1:
                 self.engine.curp.x -= 1
-                self.engine.curp.y -= 1
+                self.engine.curp.y += 1
                 return self.ACTIONS['took-turn']
         # RIGHT-DOWN
         elif player_action == tcod.KEY_KP3:
             if self.engine.curp.x < self.engine.curl.map.w - 1 and self.engine.curp.y < self.engine.curl.map.h - 1:
-                self.engine.curp.x -= 1
-                self.engine.curp.y -= 1
+                self.engine.curp.x += 1
+                self.engine.curp.y += 1
                 return self.ACTIONS['took-turn']
 
         return self.ACTIONS['didnt-take-turn']
