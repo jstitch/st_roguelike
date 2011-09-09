@@ -23,6 +23,10 @@ class Player(object.Object):
 
     Methods:
       __init__
+
+    Variables:
+      curlevel - level at which this player is currently hacking
+                 around
     """
     def __init__(self, char, color, name, x, y):
         """
@@ -35,3 +39,4 @@ class Player(object.Object):
                                              # power=5,
                                              # death_function=player_death
         object.Object.__init__(self, char, color, name, x, y, True, fighter_component)
+        self.curlevel = None

@@ -29,11 +29,11 @@ class Object:
       clear
 
     Variables:
-      x, y
-      char
-      color
-      name
-      blocks
+      x, y   - coordinates in which the object 'lives' in the level
+      char   - char to represent the object when rendered
+      color  - color to use to render  the object
+      name   - name of the object
+      blocks - whether the object blocks other objects or not
     """
     def __init__(self, char, color, name, x = -1, y = -1, blocks = False,
                  fighter=None, ai=None, item=None):

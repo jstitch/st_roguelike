@@ -206,7 +206,7 @@ class UI:
             log.critical(str(e))
             raise AttributeError("ERROR: could not print messages")
 
-    def refresh_map(self, world, x, y):
+    def refresh_map(self, level, x, y):
         """
         Render current level.
 
@@ -216,14 +216,13 @@ class UI:
         offsetted to some side of the rendered map
 
         Arguments:
-          world : the world.World object where the current level and
-                  map lives
+          level : the level which map will be rendered
           x, y  : intended center coordinates of the map
         """
         try:
-            if x < 0 or y < 0 or x > world.cur_level.map.w - 1 or y > world.cur_level.map.h - 1:
+            if x < 0 or y < 0 or x > level.map.w - 1 or y > level.map.h - 1:
                 raise util.RoguewartsException("ERROR: char out of map bounds! (x=%d,y=%d) when max map is (%d,%d)" %
-                                               (x,y,world.cur_level.map.w - 1,world.cur_level.map.h - 1))
+                                               (x,y,level.map.w - 1,level.map.h - 1))
 
             # to render correctly, we need the character dimensions of the
             # area where the map is to be drawn
@@ -234,7 +233,7 @@ class UI:
                 log.critical(str(e))
                 raise Exception("ERROR: could not determine draw area dimensions")
 
-            level = world.cur_level
+            level = level
             
             # fov calculations... (shouldn't be here, should already be calculated elsewhere...)
 

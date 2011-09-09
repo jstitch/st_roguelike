@@ -73,12 +73,13 @@ class Game:
       exit
 
     Variables:
-      state
-      world
-      dumx, dumy
-      util
-      ui
-      update
+      state  - current game state
+      world  - game world
+      curp   - current player
+      curl   - current level
+      util   - engine utilities instance
+      ui     - game ui instance
+      update - engine update cycle instance
     """
     def __init__(self, uilib, uiparams):
         """
@@ -92,8 +93,8 @@ class Game:
         self.state = STATES['MAINMENU']
 
         self.world = world.World()
-        self.dumx = 0
-        self.dumy = 0
+        self.curp = None
+        self.curl = None
 
         self.util = GameUtil(self)
         self.ui = ui.UI(uilib, uiparams)
@@ -130,17 +131,19 @@ class Game:
         Go to new game state.
 
         -Initializes world for a new game.
+        -Retrieves current level #1
         -Adds welcome message
         """
         self.state = STATES['PLAYING']
 
-        self.world.new_game()
+        self.curl = self.world.new_game()
+        self.curp = self.world.players[0]
 
         self.util.add_message(_("Welcome to RogueWarts anonymous!"), MESSAGETYPES['SUCCESS'])
         if util.debug:
-            self.util.add_message("x:%d,y:%d" % (self.dumx, self.dumy), MESSAGETYPES['ALERT'])
+            self.util.add_message("x:%d,y:%d" % (self.curp.x, self.curp.y), MESSAGETYPES['ALERT'])
 
-        self.ui.refresh_map(self.world, self.dumx, self.dumy)
+        self.ui.refresh_map(self.curl, self.curp.x, self.curp.y)
 
     def exit(self):
         """
@@ -157,8 +160,8 @@ class GameUtil:
       add_message
 
     Variables:
-      qmessage
-      engine
+      qmessage - messages queue
+      engine   - ref to the engine
     """
     def __init__(self, engine):
         """
@@ -193,10 +196,10 @@ class Gameplay:
       action
 
     Variables:
-      action_type
-      engine
-      util
-      ui
+      action_type - what action has been taken
+      engine      - ref to game engine
+      util        - ref to engine utils
+      ui          - ref to ui
     """
 
     """Action types."""
@@ -232,14 +235,15 @@ class Gameplay:
             if self.ui.is_closed():
                 self.engine.exit()
 
+            # TODO: for each player
             # refresh display
             if self.action_type == self.ACTIONS['took-turn']:
                 if util.debug:
-                    self.util.add_message("x:%d,y:%d" % (self.engine.dumx, self.engine.dumy), MESSAGETYPES['ALERT'])
-                self.ui.refresh_map(self.engine.world, self.engine.dumx, self.engine.dumy)
+                    self.util.add_message("x:%d,y:%d" % (self.engine.curp.x, self.engine.curp.y), MESSAGETYPES['ALERT'])
+                self.ui.refresh_map(self.engine.curl, self.engine.curp.x, self.engine.curp.y)
 
             # clear objects in current level display
-            for obj in self.engine.world.cur_level.objects:
+            for obj in self.engine.curl.objects:
                 obj.clear()
                 self.ui.clear_obj(obj)
 
@@ -248,10 +252,11 @@ class Gameplay:
             if self.action_type == self.ACTIONS['exit-game']:
                 self.engine.exit()
                 return
+            # end for each player
 
             # let monsters take turn, only if it applies (for speed/last input command considerations)
             if self.engine.state == STATES['PLAYING'] and self.action_type != self.ACTIONS['didnt-take-turn']:
-                for obj in self.engine.world.cur_level.objects:
+                for obj in self.engine.curl.objects:
                     if obj.ai:
                         obj.ai.take_turn()
         except util.RoguewartsException as e:
@@ -280,20 +285,20 @@ class Gameplay:
 
         # move player
         if player_action == tcod.KEY_UP:
-            if self.engine.dumy > 0:
-                self.engine.dumy -= 1
+            if self.engine.curp.y > 0:
+                self.engine.curp.y -= 1
                 return self.ACTIONS['took-turn']
         elif player_action == tcod.KEY_DOWN:
-            if self.engine.dumy < self.engine.world.cur_level.map.h - 1:
-                self.engine.dumy += 1
+            if self.engine.curp.y < self.engine.curl.map.h - 1:
+                self.engine.curp.y += 1
                 return self.ACTIONS['took-turn']
         elif player_action == tcod.KEY_LEFT:
-            if self.engine.dumx > 0:
-                self.engine.dumx -= 1
+            if self.engine.curp.x > 0:
+                self.engine.curp.x -= 1
                 return self.ACTIONS['took-turn']
         elif player_action == tcod.KEY_RIGHT:
-            if self.engine.dumx < self.engine.world.cur_level.map.w - 1:
-                self.engine.dumx += 1 
+            if self.engine.curp.x < self.engine.curl.map.w - 1:
+                self.engine.curp.x += 1 
                 return self.ACTIONS['took-turn']
 
         return self.ACTIONS['didnt-take-turn']
