@@ -284,21 +284,49 @@ class Gameplay:
             return self.ACTIONS['exit-game']
 
         # move player
-        if player_action == tcod.KEY_UP:
+        # UP
+        if player_action == tcod.KEY_UP or player_action == tcod.KEY_KP8:
             if self.engine.curp.y > 0:
                 self.engine.curp.y -= 1
                 return self.ACTIONS['took-turn']
-        elif player_action == tcod.KEY_DOWN:
+        # DOWN
+        elif player_action == tcod.KEY_DOWN or player_action == tcod.KEY_KP2:
             if self.engine.curp.y < self.engine.curl.map.h - 1:
                 self.engine.curp.y += 1
                 return self.ACTIONS['took-turn']
-        elif player_action == tcod.KEY_LEFT:
+        # LEFT
+        elif player_action == tcod.KEY_LEFT or player_action == tcod.KEY_KP4:
             if self.engine.curp.x > 0:
                 self.engine.curp.x -= 1
                 return self.ACTIONS['took-turn']
-        elif player_action == tcod.KEY_RIGHT:
+        # RIGHT
+        elif player_action == tcod.KEY_RIGHT or player_action == tcod.KEY_KP6:
             if self.engine.curp.x < self.engine.curl.map.w - 1:
                 self.engine.curp.x += 1 
+                return self.ACTIONS['took-turn']
+        # LEFT-UP
+        elif player_action == tcod.KEY_KP7:
+            if self.engine.curp.x > 0 and self.engine.curp.y > 0:
+                self.engine.curp.x -= 1
+                self.engine.curp.y -= 1
+                return self.ACTIONS['took-turn']
+        # RIGHT-UP
+        elif player_action == tcod.KEY_KP9:
+            if self.engine.curp.x < self.engine.curl.map.w - 1 and self.engine.curp.y > 0:
+                self.engine.curp.x -= 1
+                self.engine.curp.y -= 1
+                return self.ACTIONS['took-turn']
+        # LEFT-DOWN
+        elif player_action == tcod.KEY_KP1:
+            if self.engine.curp.x > 0 and self.engine.curp.y < self.engine.curl.map.h - 1:
+                self.engine.curp.x -= 1
+                self.engine.curp.y -= 1
+                return self.ACTIONS['took-turn']
+        # RIGHT-DOWN
+        elif player_action == tcod.KEY_KP3:
+            if self.engine.curp.x < self.engine.curl.map.w - 1 and self.engine.curp.y < self.engine.curl.map.h - 1:
+                self.engine.curp.x -= 1
+                self.engine.curp.y -= 1
                 return self.ACTIONS['took-turn']
 
         return self.ACTIONS['didnt-take-turn']
