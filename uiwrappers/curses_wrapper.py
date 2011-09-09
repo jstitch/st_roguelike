@@ -26,6 +26,14 @@ class curses_wrapper:
         curses.KEY_RIGHT : libtcod.KEY_RIGHT,
         curses.KEY_UP    : libtcod.KEY_UP,
         curses.KEY_DOWN  : libtcod.KEY_DOWN,
+        ord('1')         : libtcod.KEY_KP1,
+        ord('2')         : libtcod.KEY_KP2,
+        ord('3')         : libtcod.KEY_KP3,
+        ord('4')         : libtcod.KEY_KP4,
+        ord('6')         : libtcod.KEY_KP6,
+        ord('7')         : libtcod.KEY_KP7,
+        ord('8')         : libtcod.KEY_KP8,
+        ord('9')         : libtcod.KEY_KP9,
         27               : libtcod.KEY_ESCAPE
         }
 
