@@ -68,7 +68,7 @@ JNC - jstitch@gmail.com
 """
 
 import logging, logging.config, ConfigParser
-import sys, getopt
+import sys, getopt, os
 import game
 import util
 
@@ -90,6 +90,8 @@ def config_logger(filename = 'roguewarts.log'):
     """
     global log, loglevel
     try:
+        if not os.path.exists('log/'):
+            os.mkdir('log/')
         logging.config.fileConfig('logging.conf')
     except ConfigParser.NoOptionError:
         fh = logging.handlers.RotatingFileHandler('log/' + filename, "a", maxBytes=1048576, backupCount=10)
