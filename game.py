@@ -236,24 +236,27 @@ class Gameplay:
             if self.ui.is_closed():
                 self.engine.exit()
 
-            # TODO: for each player
-            # refresh display
-            if self.action_type == self.ACTIONS['took-turn']:
-                if util.debug:
-                    self.util.add_message("x:%d,y:%d" % (self.engine.curp.x, self.engine.curp.y), MESSAGETYPES['ALERT'])
-                self.ui.refresh_map(self.engine.curl, self.engine.curp.x, self.engine.curp.y)
+            # For each player
+            for p in self.engine.world.players:
 
-            # clear objects in current level display
-            for obj in self.engine.curl.objects:
-                obj.clear()
-                self.ui.clear_obj(obj)
+                self.engine.curp = p
 
-            # execute action taken
-            self.action_type = self.action(self.ui.handle_input())
-            if self.action_type == self.ACTIONS['exit-game']:
-                self.engine.exit()
-                return
-            # end for each player
+                # refresh display
+                if self.action_type == self.ACTIONS['took-turn']:
+                    if util.debug:
+                        self.util.add_message("x:%d,y:%d" % (self.engine.curp.x, self.engine.curp.y), MESSAGETYPES['ALERT'])
+                    self.ui.refresh_map(self.engine.curl, self.engine.curp.x, self.engine.curp.y)
+
+                # clear objects in current level display
+                for obj in self.engine.curl.objects:
+                    obj.clear()
+                    self.ui.clear_obj(obj)
+
+                # execute action taken
+                self.action_type = self.action(self.ui.handle_input())
+                if self.action_type == self.ACTIONS['exit-game']:
+                    self.engine.exit()
+                    return
 
             # let monsters take turn, only if it applies (for speed/last input command considerations)
             if self.engine.state == STATES['PLAYING'] and self.action_type != self.ACTIONS['didnt-take-turn']:
