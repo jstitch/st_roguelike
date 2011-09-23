@@ -7,16 +7,40 @@ The World holds all the game information which is not related to the
 UI or to the way the game evolves through time (which belongs to the
 engine). Ie, it holds all the game data and its current state.
 
-  class World : main model class.
+  class World         : the world model class
+
+  class WORLDBRANCHES : the branches on which the levels are grouped
 """
 
 import libtcod.libtcodpy as tcod
-import level
+import level, mapa
 import player
 import logging
 import time, calendar
 
 log = logging.getLogger('roguewarts.world')
+
+class WORLDBRANCHES:
+    """
+    Branches of the world.
+
+    Each branch is a dictionary with the following structure:
+
+      - name     : the generic name for the branch
+
+      - maptypes : a list containing mapa.MAPTYPES, giving the valid
+                   map types that any level in the branch may hold
+    """
+    classrooms = {'name'    : 'classrooms',
+                  'maptypes': [mapa.MAPTYPES.classrooms, mapa.MAPTYPES.classrooms_2]}
+
+    dungeons   = {'name'    : 'dungeons',
+                  'maptypes': [mapa.MAPTYPES.dungeon, mapa.MAPTYPES.dungeon_2]}
+
+    woods      = {'name'    : 'woods',
+                  'maptypes': [mapa.MAPTYPES.wood]}
+
+    # hogsmeade, london, ministery, diagon_alley, gringotts, country (riddles,burrow,etc)
 
 class World:
     """
@@ -62,9 +86,9 @@ class World:
         """
         levels = [] # just a list of all the levels in the world
 
-        levels.append(level.Level(0, 'init', level.WORLDBRANCHES.dungeons, self.wrldrg))
-        levels.append(level.Level(1, '1st floor', level.WORLDBRANCHES.classrooms, self.wrldrg))
-        levels.append(level.Level(-1, '1st dung', level.WORLDBRANCHES.dungeons, self.wrldrg))
+        levels.append(level.Level(0, 'init', WORLDBRANCHES.dungeons, self.wrldrg))
+        levels.append(level.Level(1, '1st floor', WORLDBRANCHES.classrooms, self.wrldrg))
+        levels.append(level.Level(-1, '1st dung', WORLDBRANCHES.dungeons, self.wrldrg))
 
         # graph relating levels to connecting levels
         self.levels[levels[0].name] = [levels[0], levels[1], levels[2]]
