@@ -68,7 +68,7 @@ JNC - jstitch@gmail.com
 """
 
 import logging, logging.config, ConfigParser
-import sys, getopt, os
+import sys, getopt, os, traceback as tbck
 import game
 import util
 
@@ -124,7 +124,7 @@ class RogueWarts:
         try:
             self.game = game.Game(uilib, uiparams)
         except Exception as e:
-            log.error(str(e))
+            log.error(tbck.format_exc())
             raise util.RoguewartsException("initerror:" + str(e))
         
     def run(self):
@@ -146,7 +146,7 @@ class RogueWarts:
             except KeyboardInterrupt:
                 pass
             except Exception as e:
-                log.error(str(e))
+                log.error(tbck.format_exc())
                 print str(e)
                 break
 

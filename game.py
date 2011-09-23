@@ -44,6 +44,7 @@ import libtcod.libtcodpy as tcod
 import ui, world
 from util import _
 import util
+import traceback as tbck
 
 log = logging.getLogger('roguewarts.game')
 
@@ -261,7 +262,7 @@ class Gameplay:
                         obj.ai.take_turn()
         except util.RoguewartsException as e:
             try:
-                log.error(str(e))
+                log.error(tbck.format_exc())
                 self.util.add_message(str(e), MESSAGETYPES['ALERT'])
                 self.action_type = ''
             except Exception as e2:
