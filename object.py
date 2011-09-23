@@ -3,7 +3,7 @@ object.py
 
 RogueWarts, object class and components.
 
-  class Object  : base Object class
+  class Object  : base Object model class
 
   class Fighter : fighter component
 

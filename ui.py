@@ -46,11 +46,8 @@ class UI:
       messages_queue - queue of messages for the user
     """
 
-    """Minimum screen width."""
-    SCREEN_WIDTH = 105
-
-    """Minimum screen height."""
-    SCREEN_HEIGHT = 36
+    """Minimum screen dimensions."""
+    SCREEN_DIMS = (105, 36)
 
     def __init__(self, uilib, uiparams):
         """
@@ -112,7 +109,7 @@ class UI:
 
         # finally, initialize UI screen
         try:
-            self.maxx, self.maxy = self.ui.init(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.areas, *uiparams)
+            self.maxx, self.maxy = self.ui.init(self.SCREEN_DIMS, self.areas, *uiparams)
         except AttributeError as e:
             self.ui.close()
             log.critical(str(e))
@@ -126,8 +123,8 @@ class UI:
         if (self.maxx, self.maxy) < (0, 0):
             self.ui.close()
             log.critical("Screen needs to be at least (%d, %d). Current size is (%d, %d)" %
-                         (self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.maxx * -1, self.maxy * -1))
-            raise Exception("ERROR: screen size is too low, you need at least (%d, %d)" % (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+                         (self.SCREEN_DIMS, self.maxx * -1, self.maxy * -1))
+            raise Exception("ERROR: screen size is too low, you need at least (%d, %d)" % (self.SCREEN_DIMS))
 
         if util.debug:
             try:

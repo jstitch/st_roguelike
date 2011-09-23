@@ -77,7 +77,7 @@ class curses_wrapper:
         """Init interface."""
         self.scr = None
 
-    def init(self, minwidth, minheight, areas, maximize=False, forcemindims=False):
+    def init(self, (minwidth, minheight), areas, maximize=False, forcemindims=False):
         """
         Intialize interface.
 
@@ -237,8 +237,8 @@ class curses_wrapper:
                 else:
                     # draw map tile with char/color <- as is since it is visible
                     try:
-                        main_area['con'].addstr(cy, cx, tile.type['char'],
-                                                curses.color_pair(curses_wrapper.COLORS[tile.type['color']]['n']))
+                        main_area['con'].addstr(cy, cx, tile.tipo['char'],
+                                                curses.color_pair(curses_wrapper.COLORS[tile.tipo['color']]['n']))
                         main_area['con'].addstr(cony + y - miny, conx + x - minx, '@',
                                                 curses.color_pair(curses_wrapper.COLORS['red']['n']))
                     except Exception as e:

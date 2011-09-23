@@ -17,7 +17,7 @@ class libtcod_wrapper:
         """"Init interface."""
         self.con = None
 
-    def init(self, width, height, areas, maximize, forcedim=False):
+    def init(self, (width, height), areas, maximize, forcedim=False):
         """
         Intialize interface.
 
@@ -150,7 +150,7 @@ class libtcod_wrapper:
                 # it's visible
                 else:
                     # draw map tile with char/color <- as is since it is visible
-                    libtcod.console_set_back(main_area['con'], cx, cy, getcolorbyname(tile.type['color']), libtcod.BKGND_SET)
+                    libtcod.console_set_back(main_area['con'], cx, cy, getcolorbyname(tile.tipo['color']), libtcod.BKGND_SET)
                     libtcod.console_set_back(main_area['con'], conx + x - minx, cony + y - miny, getcolorbyname('red'), libtcod.BKGND_SET)
                     # since now it's visible, mark it as explored
                     tile.explored = True
