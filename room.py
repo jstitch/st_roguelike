@@ -208,6 +208,14 @@ class TILETYPES:
                    'block_pass' : False,
                    'block_sight': False}
 
+    # Stairs
+    stairs = {'name'       : 'stairs',
+              'char'       : '<',
+              'color'      : 'light_green',
+              'nv_color'   : '',
+              'block_pass' : False,
+              'block_sight': False}
+
 class Tile:
     """
     Tile class, a tile on the map.

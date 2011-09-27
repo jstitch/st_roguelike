@@ -122,8 +122,12 @@ class World:
         # create initial player
         self.players.append(player.Player('@', 'blue', 'Player', 0, 0))
 
+        initlev = self.levels['init'][0]
+
         for p in self.players:
-            p.curlevel = self.levels['init'][0]
+            initlev.objects.append(p)
+            initlev.players.append(p)
+            p.curlevel = initlev
             p.x,p.y = p.curlevel.mapa.get_stairs(st='start')
 
-        return self.levels['init'][0]
+        return initlev

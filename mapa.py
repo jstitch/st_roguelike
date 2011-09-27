@@ -326,7 +326,9 @@ class Dungeon2(Map):
         log.debug(" Dimensions: (%s,%s)" % (str(width) , str(height)))
         log.debug(" Number of generated rooms: %s" % str(len(rooms)))
 
-        self.stx,self.sty = (rooms[0].x1 + 1, rooms[0].y1 + 1)
+        self.stx,self.sty = (tcod.random_get_int(self.rg, rooms[0].x1 + 1, rooms[0].x2),
+                             tcod.random_get_int(self.rg, rooms[0].y1 + 1, rooms[0].y2))
+        mapa[self.stx][self.sty] = room.Tile(room.TILETYPES.stairs)
 
         return rooms
 

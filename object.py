@@ -59,6 +59,10 @@ class Object:
         self.blocks = blocks
         self.curlevel = None
 
+        self.fighter = fighter
+        self.ai = ai
+        self.item = item
+
     def move(self, dx, dy):
         """Move object to (x+dx, y+dy)."""
         if not self.curlevel.is_blocked(self.x + dx, self.y + dy):
