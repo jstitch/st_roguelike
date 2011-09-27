@@ -65,7 +65,7 @@ class World:
 
     Variables:
       wrldseed  - seed for random number generator
-      wrldrg    - random number generator
+      wrldrg    - global random number generator
       levels    - generated levels of the world
       players   - players of the game
     """
@@ -124,6 +124,6 @@ class World:
 
         for p in self.players:
             p.curlevel = self.levels['init'][0]
-            # position p.x,p.y in a valid room
+            p.x,p.y = p.curlevel.mapa.get_stairs(st='start')
 
         return self.levels['init'][0]

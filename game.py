@@ -101,7 +101,12 @@ class Game:
         self.ui = ui.UI(uilib, uiparams)
         self.update = Gameplay(self, self.util, self.ui) # default update cycle: gameplay
 
-        self.main_menu()
+        try:
+            self.main_menu()
+        except Exception as e:
+            log.error(tbck.format_exc())
+            self.ui.close()
+            raise util.RoguewartsException("initerror: " + str(e))
 
     def terminate(self):
         """
@@ -240,6 +245,7 @@ class Gameplay:
             for p in self.engine.world.players:
 
                 self.engine.curp = p
+                self.engine.curl = p.curlevel
 
                 # refresh display
                 if self.action_type == self.ACTIONS['took-turn']:
@@ -291,46 +297,42 @@ class Gameplay:
         # UP
         if player_action == tcod.KEY_UP or player_action == tcod.KEY_KP8:
             if self.engine.curp.y > 0:
-                self.engine.curp.y -= 1
+                self.engine.curp.move(0,-1)
                 return self.ACTIONS['took-turn']
         # DOWN
         elif player_action == tcod.KEY_DOWN or player_action == tcod.KEY_KP2:
             if self.engine.curp.y < self.engine.curl.mapa.h - 1:
-                self.engine.curp.y += 1
+                self.engine.curp.move(0,1)
                 return self.ACTIONS['took-turn']
         # LEFT
         elif player_action == tcod.KEY_LEFT or player_action == tcod.KEY_KP4:
             if self.engine.curp.x > 0:
-                self.engine.curp.x -= 1
+                self.engine.curp.move(-1,0)
                 return self.ACTIONS['took-turn']
         # RIGHT
         elif player_action == tcod.KEY_RIGHT or player_action == tcod.KEY_KP6:
             if self.engine.curp.x < self.engine.curl.mapa.w - 1:
-                self.engine.curp.x += 1 
+                self.engine.curpmove(1,0)
                 return self.ACTIONS['took-turn']
         # LEFT-UP
         elif player_action == tcod.KEY_KP7:
             if self.engine.curp.x > 0 and self.engine.curp.y > 0:
-                self.engine.curp.x -= 1
-                self.engine.curp.y -= 1
+                self.engine.curp.move(-1,-1)
                 return self.ACTIONS['took-turn']
         # RIGHT-UP
         elif player_action == tcod.KEY_KP9:
             if self.engine.curp.x < self.engine.curl.mapa.w - 1 and self.engine.curp.y > 0:
-                self.engine.curp.x += 1
-                self.engine.curp.y -= 1
+                self.engine.curp.move(1,-1)
                 return self.ACTIONS['took-turn']
         # LEFT-DOWN
         elif player_action == tcod.KEY_KP1:
             if self.engine.curp.x > 0 and self.engine.curp.y < self.engine.curl.mapa.h - 1:
-                self.engine.curp.x -= 1
-                self.engine.curp.y += 1
+                self.engine.curp.move(-1,1)
                 return self.ACTIONS['took-turn']
         # RIGHT-DOWN
         elif player_action == tcod.KEY_KP3:
             if self.engine.curp.x < self.engine.curl.mapa.w - 1 and self.engine.curp.y < self.engine.curl.mapa.h - 1:
-                self.engine.curp.x += 1
-                self.engine.curp.y += 1
+                self.engine.curp.move(1,1)
                 return self.ACTIONS['took-turn']
 
         return self.ACTIONS['didnt-take-turn']

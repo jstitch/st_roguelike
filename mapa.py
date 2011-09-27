@@ -123,25 +123,39 @@ class Map:
 
     Methods:
       __init__
+      make_map   - overriden in daughter classes
+      get_stairs - overriden in daughter classes
 
     Variables:
-      (w,h)
-      mapa
-      util
-      tipo
-      rg
-      roomgeo
-      rooms
+      (w,h)     - map dimensions
+      mapa      - 2D array of room.Tile
+      util      - map utils class
+      tipo      - MAPTYPES name
+      rg        - level's random number generator
+      roomgeo   - geometrics for the rooms in the map
+      rooms     - list of room.roomgeo instances, the rooms in the map
+      (stx,sty) - initial-stairs-for-the-map coordinates
     """
     def __init__(self, tipo, rg, roomgeo=room.Rect):
         """
+        Initialize the map.
+
+        -By default, it assumes rectangular shaped rooms.
+        -Fills the map 2D array with Tiles given by the 'default'
+         according to map type
+
+        Arguments:
+          tipo    - MAPTYPES name
+          rg      - level's random number generator
+          roomgeo - geometrics for the rooms in this map
         """
         (self.w, self.h) = DEF_MAP_DIMS
         self.mapa = None
         self.util = map_util()
         self.tipo = tipo
-        self.rg = rg           # level-global random number generator
-        self.roomgeo = roomgeo # rooms geometrics class for this map
+        self.rg = rg
+        self.roomgeo = roomgeo
+        (self.stx, self.sty) = (0,0)
 
         try:
             self.mapa = [[ room.Tile(tipo['deftile'])
@@ -151,6 +165,34 @@ class Map:
         except Exception as e:
             log.critical(str(e))
             raise Exception("ERROR: could not build map")
+
+    def make_map(self, dims, mapa):
+        """
+        Make an empty map.
+
+        Arguments:
+          (width, height) - map dimensions
+          mapa            - a 2D list which holds room.Tile instances
+
+        Returns:
+          room.roomgeo list of the generated rooms in the map
+          (corridors may be generated too, but they are not accounted
+          for).
+        """
+        return []
+
+    def get_stairs(self, st = 'start'):
+        """
+        Gets the coordinates for the stairs in the level
+
+        Arguments:
+          st - type of stairs
+             'start' - initial start stairs for the level
+
+        Returns:
+          Tuple with coordinates for the required stairs
+        """
+        return (self.stx, self.sty)
 
 class Dungeon(Map):
     """
@@ -171,9 +213,18 @@ class Dungeon(Map):
     Methods:
       make_map
     """
-    def make_map(self):
+    def make_map(self, dims, mapa):
         """
         Make a dungeon map.
+
+        Arguments:
+          dims - map dimensions
+          mapa - a 2D list which holds room.Tile instances
+
+        Returns:
+          room.roomgeo list of the generated rooms in the map
+          (corridors may be generated too, but they are not accounted
+          for).
         """
         log.debug("Building a dungeon map")
         return []
@@ -216,8 +267,9 @@ class Dungeon2(Map):
           room_max_size   - parameter, max size for the generated rooms
 
         Returns:
-          A list of the generated rooms in the map (corridors may be
-          generated too, but they are not accounted for).
+          room.roomgeo list of the generated rooms in the map
+          (corridors may be generated too, but they are not accounted
+          for).
         """
         rooms = []
         num_rooms = 0
@@ -274,7 +326,23 @@ class Dungeon2(Map):
         log.debug(" Dimensions: (%s,%s)" % (str(width) , str(height)))
         log.debug(" Number of generated rooms: %s" % str(len(rooms)))
 
+        self.stx,self.sty = (rooms[0].x1 + 1, rooms[0].y1 + 1)
+
         return rooms
+
+    def get_stairs(self, st='start'):
+        """
+        Gets the coordinates for the stairs in the level
+
+        Arguments:
+          st - type of stairs
+             'start' - initial start stairs for the level
+
+        Returns:
+          Tuple with coordinates for the required stairs
+          """
+        if st == 'start':
+            return (self.stx, self.sty)
 
 class Classrooms(Map):
     """
@@ -300,9 +368,18 @@ class Classrooms(Map):
     Methods:
       make_map
     """
-    def make_map(self):
+    def make_map(self, dims, mapa):
         """
-        Make a classroom map.
+        Make a dungeon map.
+
+        Arguments:
+          dims - map dimensions
+          mapa - a 2D list which holds room.Tile instances
+
+        Returns:
+          room.roomgeo list of the generated rooms in the map
+          (corridors may be generated too, but they are not accounted
+          for).
         """
         log.debug("Building a classrooms map")
         return []
@@ -336,9 +413,18 @@ class Classrooms2(Map):
     Methods:
       make_map
     """
-    def make_map(self):
+    def make_map(self, dims, mapa):
         """
-        Make a classroom type 2 map.
+        Make a dungeon map.
+
+        Arguments:
+          dims - map dimensions
+          mapa - a 2D list which holds room.Tile instances
+
+        Returns:
+          room.roomgeo list of the generated rooms in the map
+          (corridors may be generated too, but they are not accounted
+          for).
         """
         log.debug("Building a classrooms type 2 map")
         return []
@@ -372,9 +458,18 @@ class Cave(Map):
     Methods:
       make_map
     """
-    def make_map(self):
+    def make_map(self, dims, mapa):
         """
-        Make a cave/wood map.
+        Make a dungeon map.
+
+        Arguments:
+          dims - map dimensions
+          mapa - a 2D list which holds room.Tile instances
+
+        Returns:
+          room.roomgeo list of the generated rooms in the map
+          (corridors may be generated too, but they are not accounted
+          for).
         """
         log.debug("Building a cave/wood map")
         return []
@@ -395,9 +490,18 @@ class Labyrinth(Map):
     Methods:
       make_map
     """
-    def make_map(self):
+    def make_map(self, dims, mapa):
         """
-        Make a labyritn map.
+        Make a dungeon map.
+
+        Arguments:
+          dims - map dimensions
+          mapa - a 2D list which holds room.Tile instances
+
+        Returns:
+          room.roomgeo list of the generated rooms in the map
+          (corridors may be generated too, but they are not accounted
+          for).
         """
         log.debug("Building a labyrinth map")
         return []

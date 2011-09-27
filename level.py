@@ -60,6 +60,12 @@ class Level:
         the world (where each branch begins and ends). This info
         should be delivered by the World itself, in not-hard-coded
         rules too.
+
+        Arguments:
+          numlevel - the level id number
+          name     - the generic name for the level
+          branch   - the branch in the world to which this level belongs
+          rng      - the world's random number generator
         """
         self.objects = []
         self.players = []
@@ -85,6 +91,25 @@ class Level:
             maptype=mapa.MAPTYPES.dungeon2
 
         self.mapa = getattr(mapa, maptype['name'])(maptype, rng)
+
+    def is_blocked(self, x, y):
+        """
+        Determines if coordinates in level are blocked for movement.
+
+        Blocking occurs if tile type is defined as blocking, or if
+        object at coordinates blocks too.
+
+        Returns:
+          Boolean indicating if coordinates are blocked for movement.
+        """
+        if self.mapa.mapa[x][y].tipo['block_pass'] == True:
+            return True
+
+        for objeto in self.objects:
+            if objeto.blocks and objeto.x == x and objeto.y == y:
+                return True
+
+        return False
 
     def place_objects(self):
         """

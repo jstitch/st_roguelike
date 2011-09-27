@@ -29,11 +29,12 @@ class Object:
       clear
 
     Variables:
-      x, y   - coordinates in which the object 'lives' in the level
-      char   - char to represent the object when rendered
-      color  - color to use to render  the object
-      name   - name of the object
-      blocks - whether the object blocks other objects or not
+      x, y     - coordinates in which the object 'lives' in the level
+      char     - char to represent the object when rendered
+      color    - color to use to render  the object
+      name     - name of the object
+      blocks   - whether the object blocks other objects or not
+      curlevel - level at which this object is currently living
     """
     def __init__(self, char, color, name, x = -1, y = -1, blocks = False,
                  fighter=None, ai=None, item=None):
@@ -51,17 +52,18 @@ class Object:
           ai      : ai component, if object is a monster
           item    : item component, if object is a item
         """
-        self.x = x
-        self.y = y
+        (self.x, self.y) = (x,y)
         self.char = char
         self.color = color
         self.name = name
         self.blocks = blocks
+        self.curlevel = None
 
     def move(self, dx, dy):
         """Move object to (x+dx, y+dy)."""
-        self.x = self.x + dx
-        self.y = self.y + dy
+        if not self.curlevel.is_blocked(self.x + dx, self.y + dy):
+            self.x = self.x + dx
+            self.y = self.y + dy
 
     def distance(self, x, y):
         """Distance to some coordinates."""
