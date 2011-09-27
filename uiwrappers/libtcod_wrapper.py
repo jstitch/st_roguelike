@@ -128,7 +128,7 @@ class libtcod_wrapper:
         """Render current level."""
         libtcod.console_clear(main_area['con'])
 
-        map_ = level.map
+        map_ = level.mapa
 
         # determine console coordinates to begin rendering according to map size
         (conx, cony) = ((main_area['w'] - map_.w)//2 if map_.w < main_area['w'] else 0,
@@ -139,7 +139,7 @@ class libtcod_wrapper:
             for mx, cx in map(None, range(minx, maxx), range(conx, map_.w + conx)):
                 visible = True # libtcod.map_is_in_fov(fov_map, x, y)
                 try:
-                    tile = map_.map[mx][my]
+                    tile = map_.mapa[mx][my]
                 except Exception as e:
                     continue
                 # it's out of the player's FOV, player will see it only if explored

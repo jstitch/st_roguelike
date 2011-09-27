@@ -1,129 +1,224 @@
-'''
+"""
 map.py
-'''
+
+RogueWarts map.
+
+A level in the game's world must have an associated map, which is
+defined in here.
+
+  tuple DEF_MAP_DIMS : default maximum dimensions for the map.
+
+  map DUNG_ROOM_LIMS : limit constants for rooms (currently max, min
+                       dims and total num).
+
+  class MAPTYPES     : holds dictionaries to define each type of map a
+                       level can have.
+
+  class Map          : base class for maps. Holds the basic attributes. A map
+                       class may inherit from this one, or at least
+                       duck-type its attributes. Also, it must
+                       duck-type some basic methods.
+
+  class Dungeon      : 'ADOM' dungeon map.
+
+  class Dungeon2     : 'Rogue' dungeon map.
+
+  class Classrooms   : Classrooms map.
+
+  class Classrooms2  : Classrooms map with empty hole in the center.
+
+  class Cave         : Cave/Wood map.
+
+  class Labyrinth    : Labyrinthic corridors map
+
+  class map_util     : Map utilities.
+"""
 
 import libtcod.libtcodpy as tcod
 import logging
+import room
 
 log = logging.getLogger('roguewarts.map')
 
-# default maximum size of the map
-DEF_MAP_WIDTH = 200
-DEF_MAP_HEIGHT = 100
+"""Default maximum size of the map."""
+DEF_MAP_DIMS = (200,100)
 
-# parameters for dungeon generation
-DUNG_ROOM_MAX_SIZE = 30
-DUNG_ROOM_MIN_SIZE = 10
-DUNG_MAX_ROOMS = 50
-
-class Rect:
-    """Rectangle, basic unit for rooms"""
-    def __init__(self, x, y, w, h):
-        self.x1 = x
-        self.y1 = y
-        self.x2 = x + w
-        self.y2 = y + h
-
-    # get center coordinates
-    def center(self):
-        center_x = (self.x1 + self.x2) / 2
-        center_y = (self.y1 + self.y2) / 2
-        return (center_x, center_y)
-
-    # returns True if this rectangle intersects with another one
-    def intersect(self, other):
-        return (self.x1 <= other.x2 and self.x2 >= other.x1 and
-                self.y1 <= other.y2 and self.y2 >= other.y1)
-
-class Circle:
-    def __init__():
-        pass
-
-class Hexag:
-    def __init__():
-        pass
-
-class TILETYPES:
-    """Types for the tiles in the map"""
-    # walls
-    wall   = {'name': 'wall', 'char': '#', 'color': 'dark_blue', 'nv_color': '', 'block_pass': True, 'block_sight': True}
-    tree   = {'name': 'tree', 'char': '#', 'color': 'dark_green', 'nv_color': '', 'block_pass': True, 'block_sight': True}
-    window = {'name': 'window', 'char': '=', 'color': 'light_cyan', 'nv_color': '', 'block_pass': True, 'block_sight': False}
-
-    # floors
-    dung_floor  = {'name': 'floor', 'char': '.', 'color': 'light_yellow', 'nv_color': '', 'block_pass': False, 'block_sight': False}
-    stall       = {'name': 'stall', 'char': '-', 'color': 'dark_yellow', 'nv_color': '', 'block_pass': False, 'block_sight': False}
-    desk        = {'name': 'desk', 'char': '-', 'color': 'dark_yellow', 'nv_color': '', 'block_pass': False, 'block_sight': False}
-
-class Tile:
-    """Tile class, a tile on the map"""
-    def __init__(self, type = TILETYPES.wall):
-        self.type = type
-        # 'explored by the player' status
-        self.explored = False
+"""Default limits constants concerning rooms in the map."""
+DUNG_ROOM_LIMS = {'max': 30, 'min': 10, 'num': 50}
 
 class MAPTYPES:
-    """Types for different kind of maps"""
-    classrooms   = {'name': 'classrooms',   # classrooms side by side with central hallway
-                    'deftile': TILETYPES.wall,
-                    'makeparams': None
+    """
+    Types for different kind of level maps.
+
+    Defines classrooms, dungeons, caves, woods, labyrinths, ...
+
+    Each type must have:
+      name       - a name for the map type and a class implementing map
+                   methods
+      deftile    - a type of tile to cover all the map by default
+      makeparams - parameters dictionary, used when building the map
+    """
+
+    # classrooms, side by side, with central hallway
+    classrooms   = {'name'       : 'Classrooms',
+                    'deftile'    : room.TILETYPES.wall,
+                    'makeparams' : None
                     }
-    classrooms_2 = {'name': 'classrooms_2', # classrooms side by side with hallway at a side surrounding a central geometric empty (maybe with stairs) hole
-                    'deftile': TILETYPES.wall,
-                    'makeparams': None
+
+    # classrooms, side by side, with hallway at a side surrounding a
+    # central geometric empty (maybe with stairs) hole
+    classrooms2 = {'name'       : 'Classrooms2',
+                   'deftile'    : room.TILETYPES.wall,
+                   'makeparams' : None
+                   }
+
+    # dungeon with rooms built side by side
+    dungeon      = {'name'       : 'Dungeon',
+                    'deftile'    : room.TILETYPES.wall,
+                    'makeparams' : {'maxrooms'      : DUNG_ROOM_LIMS['num'],
+                                    'room_min_size' : DUNG_ROOM_LIMS['min'],
+                                    'room_max_size' : DUNG_ROOM_LIMS['max']}
                     }
-    dungeon      = {'name': 'dungeon',    # dungeon with rooms side by side
-                    'deftile': TILETYPES.wall,
-                    'makeparams': {'maxrooms': DUNG_MAX_ROOMS, 'room_min_size': DUNG_ROOM_MIN_SIZE, 'room_max_size': DUNG_ROOM_MAX_SIZE}
+
+    # standard 'roguelike' dungeon
+    dungeon2    = {'name'       : 'Dungeon2',
+                   'deftile'    : room.TILETYPES.wall,
+                   'makeparams' : {'maxrooms'      : DUNG_ROOM_LIMS['num'],
+                                   'room_min_size' : DUNG_ROOM_LIMS['min'],
+                                   'room_max_size' : DUNG_ROOM_LIMS['max']}
+                   }
+
+    # a cave
+    cave         = {'name'       : 'Cave',
+                    'deftile'    : room.TILETYPES.wall,
+                    'makeparams' : None
                     }
-    dungeon_2    = {'name': 'dungeon_2',      # standard 'roguelike' dungeon
-                    'deftile': TILETYPES.wall,
-                    'makeparams': {'maxrooms': DUNG_MAX_ROOMS, 'room_min_size': DUNG_ROOM_MIN_SIZE, 'room_max_size': DUNG_ROOM_MAX_SIZE}
+
+    # a wood
+    wood         = {'name'       : 'Wood',
+                    'deftile'    : room.TILETYPES.tree,
+                    'makeparams' : None
                     }
-    cave         = {'name': 'cave',         # a cave
-                    'deftile': TILETYPES.wall,
-                    'makeparams': None
+
+    # labyrinth between rooms (instead of standard corridors/hallways)
+    labyrinth    = {'name'       : 'Labyrinth',
+                    'deftile'    : room.TILETYPES.wall,
+                    'makeparams' : None
                     }
-    wood         = {'name': 'wood',         # a wood
-                    'deftile': TILETYPES.tree,
-                    'makeparams': None
-                    }
-    labyrinth    = {'name': 'labyrinth',    # labyrinth between rooms
-                    'deftile': TILETYPES.wall,
-                    'makeparams': None
-                    }
-    special      = {'name': 'special',      # special map, probably loaded from file
-                    'deftile': TILETYPES.wall,
-                    'makeparams': None
+
+    # special map, probably loaded from data file
+    special      = {'name'       : 'Special',
+                    'deftile'    : room.TILETYPES.wall,
+                    'makeparams' : None
                     }
 
 class Map:
-    """Map class for a level in the game"""
-    def __init__(self, type, rg, roomgeo=Rect):
-        self.w = DEF_MAP_WIDTH
-        self.h = DEF_MAP_HEIGHT
-        self.map = None
+    """
+    Generic map class for a level in the game.
+
+    When calling make_map method, it always should receive the
+    self.mapa, (self.w,self.h) variables, and everything else as
+    optional parameters, defined in the make_map method itself (and
+    declared in the MAPTYPES dictionaries)
+
+    Methods:
+      __init__
+
+    Variables:
+      (w,h)
+      mapa
+      util
+      tipo
+      rg
+      roomgeo
+      rooms
+    """
+    def __init__(self, tipo, rg, roomgeo=room.Rect):
+        """
+        """
+        (self.w, self.h) = DEF_MAP_DIMS
+        self.mapa = None
         self.util = map_util()
-        self.type = type
+        self.tipo = tipo
         self.rg = rg           # level-global random number generator
         self.roomgeo = roomgeo # rooms geometrics class for this map
 
         try:
-            self.map = [[ Tile(type['deftile'])
-                          for y in range(self.h) ]
-                        for x in range(self.w) ]
-            self.rooms = getattr(self, "make_" + type['name'] + "_map")(map = self.map, width = self.w, height = self.h, **type['makeparams'])
+            self.mapa = [[ room.Tile(tipo['deftile'])
+                           for y in range(self.h) ]
+                         for x in range(self.w) ]
+            self.rooms = self.make_map((self.w,self.h), mapa = self.mapa, **tipo['makeparams'])
         except Exception as e:
             log.critical(str(e))
             raise Exception("ERROR: could not build map")
 
-    def make_dungeon_map(self):
-        """Make a dungeon map"""
+class Dungeon(Map):
+    """
+    Builds a dungeon map.
+
+    A dungeon map has rooms side by side divided by walls and
+    corridors. Some dungeons generated at ADOM game are the kind of
+    map I'm thinking about here.
+
+    #####     ##########
+    #...#######...#....#
+    #.............#....##
+    ########.##...#......
+    #.............#....##
+    #....######........#
+    ######    ##########
+
+    Methods:
+      make_map
+    """
+    def make_map(self):
+        """
+        Make a dungeon map.
+        """
         log.debug("Building a dungeon map")
         return []
 
-    def make_dungeon_2_map(self, map, width, height, maxrooms, room_min_size, room_max_size):
-        """Make a standard roguelike dungeon map"""
+class Dungeon2(Map):
+    """
+    Builds a dungeon map, standard roguelike variation.
+
+    Here, I'm thinking in the classical dungeon from games as Rogue.
+
+    The algorithm for the generation is taken from
+    http://roguebasin.roguelikedevelopment.org/index.php/Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_3
+    (Basically, it generates some random rooms and in between two
+    generated rooms, horizontal/vertical rooms connecting them).
+
+    Also, the BSP algorithm may be used instead
+    (cf. http://doryen.eptalys.net/articles/bsp-dungeon-generation/),
+    or this may be used in some other class ;)
+
+    #####                       ######
+    #...#                       #....#
+    #...#           #####       #....#
+    #...........    #...#       ##.###
+    #...#      ....................
+    #####           #...#
+                    #####
+
+    Methods:
+      make_map
+    """
+    def make_map(self, (width,height), mapa, maxrooms=50, room_min_size=30, room_max_size=10):
+        """
+        Make a standard roguelike dungeon map.
+
+        Arguments:
+          (width, height) - map dimensions
+          mapa            - a 2D list which holds room.Tile instances
+          maxrooms        - parameter, max number of rooms to be generated
+          room_min_size   - parameter, min size for the generated rooms
+          room_max_size   - parameter, max size for the generated rooms
+
+        Returns:
+          A list of the generated rooms in the map (corridors may be
+          generated too, but they are not accounted for).
+        """
         rooms = []
         num_rooms = 0
 
@@ -136,7 +231,7 @@ class Map:
             y = tcod.random_get_int(self.rg, 0, height - rh - 1)
 
             # "Rect" class makes rectangles easiert to work with
-            new_room = self.roomgeo(x, y, rw, rh)
+            new_room = self.roomgeo((x, y), (rw, rh))
 
             # run through the other rooms and see if they intersect with this one
             failed = False
@@ -149,7 +244,7 @@ class Map:
                 # this means there are no intersections, so this room is valid
 
                 # "paint" it to the map's tiles
-                self.util.fill_rect_room(map, new_room, TILETYPES.dung_floor)
+                self.util.fill_rect_room(mapa, new_room, room.TILETYPES.dung_floor)
 
                 # center coordinates of new room, will be useful later
                 (new_x, new_y) = new_room.center()
@@ -164,12 +259,12 @@ class Map:
                     # draw a coin (random number that is either 0 or 1)
                     if tcod.random_get_int(self.rg, 0, 1) == 1:
                         # first move horizontally, then vertically
-                        self.util.create_h_tunnel(map, prev_x, new_x, prev_y, TILETYPES.dung_floor)
-                        self.util.create_v_tunnel(map, prev_y, new_y, new_x, TILETYPES.dung_floor)
+                        self.util.create_h_tunnel(mapa, prev_x, new_x, prev_y, room.TILETYPES.dung_floor)
+                        self.util.create_v_tunnel(mapa, prev_y, new_y, new_x, room.TILETYPES.dung_floor)
                     else:
                         # first move vertically, then horizontally
-                        self.util.create_v_tunnel(map, prev_y, new_y, prev_x, TILETYPES.dung_floor)
-                        self.util.create_h_tunnel(map, prev_x, new_x, new_y, TILETYPES.dung_floor)
+                        self.util.create_v_tunnel(mapa, prev_y, new_y, prev_x, room.TILETYPES.dung_floor)
+                        self.util.create_h_tunnel(mapa, prev_x, new_x, new_y, room.TILETYPES.dung_floor)
 
                 # finally, append the new room to the list
                 rooms.append(new_room)
@@ -178,47 +273,174 @@ class Map:
         log.debug("Building a standard 'roguelike' dungeon map")
         log.debug(" Dimensions: (%s,%s)" % (str(width) , str(height)))
         log.debug(" Number of generated rooms: %s" % str(len(rooms)))
+
         return rooms
 
-    def make_classrooms_map(self):
-        """Make a classroom map"""
+class Classrooms(Map):
+    """
+    Builds a classrooms map.
+
+    The idea behind this type of map is to create a series of rooms
+    side by side, divided by central corridors.
+
+    ####..##########
+    #..#..#..#.....#
+    #..#.....#.....#
+    #.....#..#.....#
+    ####..######.###
+    #..#............
+    #...............
+    #..#..##.####...
+    #..#..#.....#...
+    ####..#######..#
+    #........#.....#
+    #........#.....#
+    ################
+
+    Methods:
+      make_map
+    """
+    def make_map(self):
+        """
+        Make a classroom map.
+        """
         log.debug("Building a classrooms map")
         return []
 
-    def make_classrooms_2_map(self):
-        """Make a classroom type 2 map"""
+class Classrooms2(Map):
+    """
+    Builds a (different) classrooms map.
+
+    The idea behind this one is to build some rooms in the periphery,
+    surrounding some empty geometric area.
+
+    In this example, surronding an empty rectangular area:
+
+    ######..#####..####
+    #....#..#...#..#..#
+    #....#..#...#..#..#
+    #...........#.....#
+    ######..#####..####
+    ...................
+    ######..     ..####
+    #....#..     ..#..#
+    #.......     .....#
+    ######..     ..####
+    ...................
+    ######..#####..####
+    #....#..#...#..#..#
+    #....#..#...#.....#
+    #...........#..#..#
+    ######..#####..####
+
+    Methods:
+      make_map
+    """
+    def make_map(self):
+        """
+        Make a classroom type 2 map.
+        """
         log.debug("Building a classrooms type 2 map")
         return []
 
-    def make_cave_map(self):
-        """Make a cave/wood map"""
+class Cave(Map):
+    """
+    Builds a cave or wood map.
+
+    Besides the type of monsters/objects generated, the difference
+    comes in the type of walls to use. A wood has trees, a cave has
+    rock.
+
+    The idea may be implemented using the algorithm described in
+    http://doryen.eptalys.net/articles/dungeon-morphing/ , which uses
+    a cellular automata to transform a 'standard' dungeon map in to
+    something more amorphous.
+
+    ####.######...#######
+    ##....###..########..
+    ###.######..########.
+    ###.#####....########
+    ##.####.......#######
+    ##..####.......###.##
+    ##...#####...####...#
+    ##....######.###.....
+    #.......##..........#
+    ###...###..#####.....
+    #####......######...#
+    ##################.##
+
+    Methods:
+      make_map
+    """
+    def make_map(self):
+        """
+        Make a cave/wood map.
+        """
         log.debug("Building a cave/wood map")
         return []
 
-    def make_labyrinth_map(self):
-        """Make a labyritn map"""
+class Labyrinth(Map):
+    """
+    Builds a labyrinth map.
+
+    The idea is to have some rooms, connected with corridors forming
+    labyrinths (or no rooms and a whole labyrinth level ;)
+
+    #######...##....#####
+    #...###.#.##.##.....#
+    #.......#.#...#.#...#
+    ######.##.#.#.#.#...#
+    ##......#...#.#######
+
+    Methods:
+      make_map
+    """
+    def make_map(self):
+        """
+        Make a labyritn map.
+        """
         log.debug("Building a labyrinth map")
         return []
 
 class map_util:
-    """Map utilities"""
+    """
+    Map utilities class.
+
+    Holds some utility methods for generic use in map classes.
+
+    Methods:
+      __init__
+      fill_rect_room
+      create_h_tunnel
+      create_v_tunnel
+    """
     def __init__(self):
+        """
+        Initialization...
+        """
         pass
 
-    def fill_rect_room(self, map, room, tile):
-        """Fill a rectangular room"""
-        # go through the tiles in the rectangle and make them passable (leaving
-        # space for wall surrounding room)
+    def fill_rect_room(self, mapa, room, tile):
+        """
+        Fill a rectangular room.
+
+        Goes through the tiles in the rectangle and make them passable
+        (leaving a space for wall's surrounding room)
+        """
         for x in range(room.x1 + 1, room.x2):
             for y in range(room.y1 + 1, room.y2):
-                map[x][y].type = tile
+                mapa[x][y].tipo = tile
 
-    # Carve horizontal tunnel
-    def create_h_tunnel(self, map, x1, x2, y, tile):
+    def create_h_tunnel(self, mapa, x1, x2, y, tile):
+        """
+        Creates a horizontal tunnel connecting two coordinates.
+        """
         for x in range(min(x1, x2), max(x1, x2) + 1):
-            map[x][y].type = tile
+            mapa[x][y].tipo = tile
 
-    # Carve vertical tunnel
-    def create_v_tunnel(self, map, y1, y2, x, tile):
+    def create_v_tunnel(self, mapa, y1, y2, x, tile):
+        """
+        Creates a vertical tunnel connecting two coordinates.
+        """
         for y in range(min(y1, y2), max(y1, y2) + 1):
-            map[x][y].type = tile
+            mapa[x][y].tipo = tile

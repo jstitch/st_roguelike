@@ -6,7 +6,7 @@ RogueWarts rooms for a map.
 Figure classes use ducktyping to give a common interface to map
 methods.
 
-Coordinates in this class are relative to the map ones.
+Coordinates in this classes are relative to the map ones.
 
   class Rect         : base class for rectangular rooms
 

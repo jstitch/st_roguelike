@@ -7,6 +7,19 @@ The World holds all the game information which is not related to the
 UI or to the way the game evolves through time (which belongs to the
 engine). Ie, it holds all the game data and its current state.
 
+Note that there can be any number of 'players' in the world. This not
+necessarily means that there will be a lot of users playing the same
+game. The players in the world are just a number of characters which a
+single user may handle in turns during the game. As if playing with
+several characters at once. It may also mean several users for the
+game, but RogueWarts is not conceived with this idea in mind. Several
+tasks should be accomplished before implementing a multi-user game:
+right now there's only one FogOfWar for every player (so what one
+player discovers, the other players also see); also, right now the UI
+is implemented for a single terminal, perhaps some UI for several
+terminals taking turns (via a network or something) should be needed
+for a multi-user game.
+
   class World         : the world model class
 
   class WORLDBRANCHES : the branches on which the levels are grouped
@@ -32,10 +45,10 @@ class WORLDBRANCHES:
                    map types that any level in the branch may hold
     """
     classrooms = {'name'    : 'classrooms',
-                  'maptypes': [mapa.MAPTYPES.classrooms, mapa.MAPTYPES.classrooms_2]}
+                  'maptypes': [mapa.MAPTYPES.classrooms, mapa.MAPTYPES.classrooms2]}
 
     dungeons   = {'name'    : 'dungeons',
-                  'maptypes': [mapa.MAPTYPES.dungeon, mapa.MAPTYPES.dungeon_2]}
+                  'maptypes': [mapa.MAPTYPES.dungeon, mapa.MAPTYPES.dungeon2]}
 
     woods      = {'name'    : 'woods',
                   'maptypes': [mapa.MAPTYPES.wood]}

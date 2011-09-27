@@ -34,12 +34,13 @@ class Level:
     Variables:
       objects      - list of objects currently living in the level
                      (object = monster/player/item)
+      players      - list of players currently playing in the level
       numlevel     - id number for the level
       name         - common name for the level
       ismaraudable - tells if this level can be displayed in a
                      Marauder's map
       branch       - The world's branch to which the level belongs
-      map          - The associated map of the level
+      mapa         - The associated map of the level
     """
     def __init__(self, numlevel, name, branch, rng):
         """
@@ -61,6 +62,7 @@ class Level:
         rules too.
         """
         self.objects = []
+        self.players = []
         self.numlevel = numlevel
         self.name = name
         self.ismaraudable = False
@@ -80,9 +82,9 @@ class Level:
 
         # debugging dungeons, remove True or condition
         if util.debug or True:
-            maptype=mapa.MAPTYPES.dungeon_2
+            maptype=mapa.MAPTYPES.dungeon2
 
-        self.map = mapa.Map(maptype, rng)
+        self.mapa = getattr(mapa, maptype['name'])(maptype, rng)
 
     def place_objects(self):
         """

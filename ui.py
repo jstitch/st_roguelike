@@ -217,9 +217,9 @@ class UI:
           x, y  : intended center coordinates of the map
         """
         try:
-            if x < 0 or y < 0 or x > level.map.w - 1 or y > level.map.h - 1:
+            if x < 0 or y < 0 or x > level.mapa.w - 1 or y > level.mapa.h - 1:
                 raise util.RoguewartsException("ERROR: char out of map bounds! (x=%d,y=%d) when max map is (%d,%d)" %
-                                               (x,y,level.map.w - 1,level.map.h - 1))
+                                               (x,y,level.mapa.w - 1,level.mapa.h - 1))
 
             # to render correctly, we need the character dimensions of the
             # area where the map is to be drawn
@@ -238,21 +238,21 @@ class UI:
             # fitting in console size and (x,y) which are given to try and center
             # the map in the console. If it's not possible to center, render the
             # map and put (x,y) in an offset to a side of the map
-            (minx, miny) = (level.map.w > conarea_w and # if map is smaller than console...
+            (minx, miny) = (level.mapa.w > conarea_w and # if map is smaller than console...
                             (x - conarea_w//2 > 0 and # if not, if coordinate is beyond left half of console...
-                             (x + conarea_w//2 < level.map.w and # see if it's beyond right half of console...
+                             (x + conarea_w//2 < level.mapa.w and # see if it's beyond right half of console...
                               x - conarea_w//2 or # if it is, draw map from x - half console
-                              level.map.w - conarea_w) # if it is not beyond right half (but it is beyond left half), draw from map width-half console
+                              level.mapa.w - conarea_w) # if it is not beyond right half (but it is beyond left half), draw from map width-half console
                              or 0) # if it's not beyond left half, map will be rendered from the beginning left
                             or 0, # if map was smaller than console, it will be rendered all
-                            level.map.h > conarea_h and
+                            level.mapa.h > conarea_h and
                             (y - conarea_h//2 > 0 and # the same applies for y coord and map height
-                            (y + conarea_h//2 < level.map.h and
+                            (y + conarea_h//2 < level.mapa.h and
                              y - conarea_h//2 or
-                             level.map.h - conarea_h)
+                             level.mapa.h - conarea_h)
                             or 0) or 0)
-            (maxx, maxy) = (level.map.w if level.map.w <= conarea_w else conarea_w + minx,
-                            level.map.h if level.map.h <= conarea_h else conarea_h + miny)
+            (maxx, maxy) = (level.mapa.w if level.mapa.w <= conarea_w else conarea_w + minx,
+                            level.mapa.h if level.mapa.h <= conarea_h else conarea_h + miny)
 
             # draw objects in map...
 
