@@ -312,7 +312,7 @@ class Gameplay:
         # RIGHT
         elif player_action == tcod.KEY_RIGHT or player_action == tcod.KEY_KP6:
             if self.engine.curp.x < self.engine.curl.mapa.w - 1:
-                self.engine.curpmove(1,0)
+                self.engine.curp.move(1,0)
                 return self.ACTIONS['took-turn']
         # LEFT-UP
         elif player_action == tcod.KEY_KP7:
