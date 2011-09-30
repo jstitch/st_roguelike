@@ -16,7 +16,7 @@ import libtcod.libtcodpy as tcod
 import logging
 import time, calendar
 import mapa
-import util
+import game.util as util
 
 log = logging.getLogger('roguewarts.level')
 

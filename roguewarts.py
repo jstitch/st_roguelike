@@ -69,8 +69,8 @@ JNC - jstitch@gmail.com
 
 import logging, logging.config, ConfigParser
 import sys, getopt, os, traceback as tbck
-import game
-import util
+import game.game as game
+import game.util as util
 
 GAME_NAME = "RogueWarts"
 GAME_VERSION = "0.1 alpha-1"
