@@ -9,6 +9,7 @@ The Player should be a Fighter object.
 """
 
 import logging
+
 import objeto
 
 log = logging.getLogger('roguewarts.player')
