@@ -286,7 +286,7 @@ class UI:
             log.critical(str(e))
             raise AttributeError("ERROR: could not flush UI screen")
 
-    def clear_obj(self, object):
+    def clear_obj(self, objeto):
         """
         Clear some object in display.
 

@@ -27,7 +27,7 @@ for a multi-user game.
 
 import libtcod.libtcodpy as tcod
 import level, mapa
-import player
+import objects.player as player
 import logging
 import time, calendar
 
