@@ -34,8 +34,7 @@ roguelike support, independent of the UI issues.
    If you do not intend to run RogueWarts in a remote session, then no
    changes to libtcod are needed, as long as the graphics environment
    for the OS running the game is enabled (X Window in Unix
-   environments, perhaps MacOSX and Windows have this enabled by
-   default).
+   environments, Windows and MacOSX have this enabled by default).
 
 
 An UI wrapper should consist of a class (whose name should be the same

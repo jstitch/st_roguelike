@@ -61,20 +61,20 @@ class MAPTYPES:
 
     # classrooms, side by side, with central hallway
     classrooms   = {'name'       : 'Classrooms',
-                    'deftile'    : room.TILETYPES.wall,
+                    'deftile'    : room.TILETYPES.air,
                     'makeparams' : None
                     }
 
     # classrooms, side by side, with hallway at a side surrounding a
     # central geometric empty (maybe with stairs) hole
     classrooms2 = {'name'       : 'Classrooms2',
-                   'deftile'    : room.TILETYPES.wall,
+                   'deftile'    : room.TILETYPES.air,
                    'makeparams' : None
                    }
 
     # dungeon with rooms built side by side
     dungeon      = {'name'       : 'Dungeon',
-                    'deftile'    : room.TILETYPES.wall,
+                    'deftile'    : room.TILETYPES.rock,
                     'makeparams' : {'maxrooms'      : DUNG_ROOM_LIMS['num'],
                                     'room_min_size' : DUNG_ROOM_LIMS['min'],
                                     'room_max_size' : DUNG_ROOM_LIMS['max']}
@@ -82,7 +82,7 @@ class MAPTYPES:
 
     # standard 'roguelike' dungeon
     dungeon2    = {'name'       : 'Dungeon2',
-                   'deftile'    : room.TILETYPES.wall,
+                   'deftile'    : room.TILETYPES.rock,
                    'makeparams' : {'maxrooms'      : DUNG_ROOM_LIMS['num'],
                                    'room_min_size' : DUNG_ROOM_LIMS['min'],
                                    'room_max_size' : DUNG_ROOM_LIMS['max']}
@@ -90,7 +90,7 @@ class MAPTYPES:
 
     # a cave
     cave         = {'name'       : 'Cave',
-                    'deftile'    : room.TILETYPES.wall,
+                    'deftile'    : room.TILETYPES.rock,
                     'makeparams' : None
                     }
 
@@ -108,7 +108,7 @@ class MAPTYPES:
 
     # special map, probably loaded from data file
     special      = {'name'       : 'Special',
-                    'deftile'    : room.TILETYPES.wall,
+                    'deftile'    : room.TILETYPES.rock,
                     'makeparams' : None
                     }
 

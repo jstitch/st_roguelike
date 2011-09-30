@@ -165,6 +165,20 @@ class TILETYPES:
                     players/monsters
     """
     # Walls
+    air    = {'name'       : 'air',
+              'char'       : ' ',
+              'color'      : 'dark_gray',
+              'nv_color'   : '',
+              'block_pass' : True,
+              'block_sight': False}
+
+    rock   = {'name'       : 'rock',
+              'char'       : ' ',
+              'color'      : 'black',
+              'nv_color'   : '',
+              'block_pass' : True,
+              'block_sight': True}
+
     wall   = {'name'       : 'wall',
               'char'       : '#',
               'color'      : 'dark_blue',
