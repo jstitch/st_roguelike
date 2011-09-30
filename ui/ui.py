@@ -17,6 +17,7 @@ uiwrappers package documentation at uiwrappers/__init__.py).
 
 import logging
 import sys, game
+import traceback as tbck
 import util
 
 log = logging.getLogger('roguewarts.ui')
@@ -81,8 +82,8 @@ class UI:
                                       at their minimums
         """
         try:
-            __import__("uiwrappers." + uilib + "_wrapper")
-            self.ui = getattr(sys.modules["uiwrappers." + uilib + "_wrapper"], uilib + "_wrapper")()
+            __import__("ui.uiwrappers." + uilib + "_wrapper")
+            self.ui = getattr(sys.modules["ui.uiwrappers." + uilib + "_wrapper"], uilib + "_wrapper")()
             log.info("Successfully imported " + uilib + " library")
         except ImportError:
             log.critical("Can't import wrapper library for " + uilib)
@@ -91,7 +92,7 @@ class UI:
             log.critical("Can't instantiate ui class " + uilib + "_wrapper")
             raise AttributeError("ERROR: can't instantiate ui class " + uilib + "_wrapper" + " in library" + uilib)
         except Exception as e:
-            log.critical("Can't initialize ui: %s" % str(e))
+            log.critical("Can't initialize ui: %s" % tbck.format_exc())
             raise Exception("ERROR: can't initialize ui")
 
         # Screen areas
@@ -116,7 +117,7 @@ class UI:
             raise AttributeError("ERROR: could not initialize UI")
         except Exception as e:
             self.ui.close()
-            log.critical("Error while initializing UI: %s" % str(e))
+            log.critical("Error while initializing UI: %s" % tbck.format_exc())
             raise Exception("ERROR: while initializing UI")
 
         # validates screen size
@@ -131,7 +132,7 @@ class UI:
                 self.ui.test(self.areas)
             except Exception as e:
                 self.ui.close()
-                log.critical("Error testing screen: %s" % str(e))
+                log.critical("Error testing screen: %s" % tbck.format_exc())
                 raise Exception("ERROR: at screen test")
         log.debug("Window dimensions: (%s, %s)" % (str(self.maxx), str(self.maxy)))
         log.debug("Main console: %s" % str(self.areas['main']))
@@ -227,7 +228,7 @@ class UI:
                 conarea_w, conarea_h = (self.areas['main']['w'], self.areas['main']['h'])
             except Exception as e:
                 self.ui.close()
-                log.critical(str(e))
+                log.critical(tbck.format_exc())
                 raise Exception("ERROR: could not determine draw area dimensions")
 
             level = level

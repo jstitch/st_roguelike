@@ -41,7 +41,7 @@ This module holds the following structures:
 
 import logging
 import libtcod.libtcodpy as tcod
-import ui, world
+import ui.ui as ui, world
 from util import _
 import util
 import traceback as tbck
