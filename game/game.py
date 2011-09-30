@@ -41,10 +41,12 @@ This module holds the following structures:
 
 import logging
 import libtcod.libtcodpy as tcod
-import ui.ui as ui, world.world as world
+import traceback as tbck
+
 from util import _
 import util
-import traceback as tbck
+import ui.ui as ui
+import world.world as world
 
 log = logging.getLogger('roguewarts.game')
 

@@ -18,6 +18,7 @@ uiwrappers package documentation at uiwrappers/__init__.py).
 import logging
 import sys, game
 import traceback as tbck
+
 import game.util as util
 
 log = logging.getLogger('roguewarts.ui')

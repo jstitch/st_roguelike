@@ -36,7 +36,9 @@ defined in here.
 
 import libtcod.libtcodpy as tcod
 import logging
-import room, tile
+
+import room
+import tile
 
 log = logging.getLogger('roguewarts.map')
 

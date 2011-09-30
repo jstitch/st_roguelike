@@ -6,6 +6,7 @@ import curses
 import textwrap
 import libtcod.libtcodpy as libtcod
 import logging
+
 import game.util as util
 
 log = logging.getLogger('roguewarts.curses_wrapper')

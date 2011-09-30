@@ -26,10 +26,12 @@ for a multi-user game.
 """
 
 import libtcod.libtcodpy as tcod
-import level, mapa
-import objects.player as player
 import logging
 import time, calendar
+
+import level
+import mapa
+import objects.player as player
 
 log = logging.getLogger('roguewarts.world')
 

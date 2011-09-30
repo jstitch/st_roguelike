@@ -9,11 +9,11 @@ The Player should be a Fighter object.
 """
 
 import logging
-import object
+import objeto
 
 log = logging.getLogger('roguewarts.player')
 
-class Player(object.Object):
+class Player(objeto.Object):
     """
     Player class.
 
@@ -33,8 +33,8 @@ class Player(object.Object):
         Defines the fighter component of the player (giving it
         hitpoints, power, etc.)
         """
-        fighter_component = object.Fighter() # hp=30, defense=2,
+        fighter_component = objeto.Fighter() # hp=30, defense=2,
                                              # power=5,
                                              # death_function=player_death
-        object.Object.__init__(self, char, color, name, x, y, True, fighter_component)
+        objeto.Object.__init__(self, char, color, name, x, y, True, fighter_component)
 
