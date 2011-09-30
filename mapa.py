@@ -36,7 +36,7 @@ defined in here.
 
 import libtcod.libtcodpy as tcod
 import logging
-import room
+import room, tile
 
 log = logging.getLogger('roguewarts.map')
 
@@ -61,20 +61,20 @@ class MAPTYPES:
 
     # classrooms, side by side, with central hallway
     classrooms   = {'name'       : 'Classrooms',
-                    'deftile'    : room.TILETYPES.air,
+                    'deftile'    : tile.TILETYPES.air,
                     'makeparams' : None
                     }
 
     # classrooms, side by side, with hallway at a side surrounding a
     # central geometric empty (maybe with stairs) hole
     classrooms2 = {'name'       : 'Classrooms2',
-                   'deftile'    : room.TILETYPES.air,
+                   'deftile'    : tile.TILETYPES.air,
                    'makeparams' : None
                    }
 
     # dungeon with rooms built side by side
     dungeon      = {'name'       : 'Dungeon',
-                    'deftile'    : room.TILETYPES.rock,
+                    'deftile'    : tile.TILETYPES.rock,
                     'makeparams' : {'maxrooms'      : DUNG_ROOM_LIMS['num'],
                                     'room_min_size' : DUNG_ROOM_LIMS['min'],
                                     'room_max_size' : DUNG_ROOM_LIMS['max']}
@@ -82,7 +82,7 @@ class MAPTYPES:
 
     # standard 'roguelike' dungeon
     dungeon2    = {'name'       : 'Dungeon2',
-                   'deftile'    : room.TILETYPES.rock,
+                   'deftile'    : tile.TILETYPES.rock,
                    'makeparams' : {'maxrooms'      : DUNG_ROOM_LIMS['num'],
                                    'room_min_size' : DUNG_ROOM_LIMS['min'],
                                    'room_max_size' : DUNG_ROOM_LIMS['max']}
@@ -90,25 +90,25 @@ class MAPTYPES:
 
     # a cave
     cave         = {'name'       : 'Cave',
-                    'deftile'    : room.TILETYPES.rock,
+                    'deftile'    : tile.TILETYPES.rock,
                     'makeparams' : None
                     }
 
     # a wood
     wood         = {'name'       : 'Wood',
-                    'deftile'    : room.TILETYPES.tree,
+                    'deftile'    : tile.TILETYPES.tree,
                     'makeparams' : None
                     }
 
     # labyrinth between rooms (instead of standard corridors/hallways)
     labyrinth    = {'name'       : 'Labyrinth',
-                    'deftile'    : room.TILETYPES.wall,
+                    'deftile'    : tile.TILETYPES.wall,
                     'makeparams' : None
                     }
 
     # special map, probably loaded from data file
     special      = {'name'       : 'Special',
-                    'deftile'    : room.TILETYPES.rock,
+                    'deftile'    : tile.TILETYPES.rock,
                     'makeparams' : None
                     }
 
@@ -128,7 +128,7 @@ class Map:
 
     Variables:
       (w,h)     - map dimensions
-      mapa      - 2D array of room.Tile
+      mapa      - 2D array of tile.Tile
       util      - map utils class
       tipo      - MAPTYPES name
       rg        - level's random number generator
@@ -158,7 +158,7 @@ class Map:
         (self.stx, self.sty) = (0,0)
 
         try:
-            self.mapa = [[ room.Tile(tipo['deftile'])
+            self.mapa = [[ tile.Tile(tipo['deftile'])
                            for y in range(self.h) ]
                          for x in range(self.w) ]
             self.rooms = self.make_map((self.w,self.h), mapa = self.mapa, **tipo['makeparams'])
@@ -172,7 +172,7 @@ class Map:
 
         Arguments:
           (width, height) - map dimensions
-          mapa            - a 2D list which holds room.Tile instances
+          mapa            - a 2D list which holds tile.Tile instances
 
         Returns:
           room.roomgeo list of the generated rooms in the map
@@ -219,7 +219,7 @@ class Dungeon(Map):
 
         Arguments:
           dims - map dimensions
-          mapa - a 2D list which holds room.Tile instances
+          mapa - a 2D list which holds tile.Tile instances
 
         Returns:
           room.roomgeo list of the generated rooms in the map
@@ -261,7 +261,7 @@ class Dungeon2(Map):
 
         Arguments:
           (width, height) - map dimensions
-          mapa            - a 2D list which holds room.Tile instances
+          mapa            - a 2D list which holds tile.Tile instances
           maxrooms        - parameter, max number of rooms to be generated
           room_min_size   - parameter, min size for the generated rooms
           room_max_size   - parameter, max size for the generated rooms
@@ -296,7 +296,7 @@ class Dungeon2(Map):
                 # this means there are no intersections, so this room is valid
 
                 # "paint" it to the map's tiles
-                self.util.fill_rect_room(mapa, new_room, room.TILETYPES.dung_floor)
+                self.util.fill_rect_room(mapa, new_room, tile.TILETYPES.dung_floor)
 
                 # center coordinates of new room, will be useful later
                 (new_x, new_y) = new_room.center()
@@ -311,12 +311,12 @@ class Dungeon2(Map):
                     # draw a coin (random number that is either 0 or 1)
                     if tcod.random_get_int(self.rg, 0, 1) == 1:
                         # first move horizontally, then vertically
-                        self.util.create_h_tunnel(mapa, prev_x, new_x, prev_y, room.TILETYPES.dung_floor)
-                        self.util.create_v_tunnel(mapa, prev_y, new_y, new_x, room.TILETYPES.dung_floor)
+                        self.util.create_h_tunnel(mapa, prev_x, new_x, prev_y, tile.TILETYPES.dung_floor)
+                        self.util.create_v_tunnel(mapa, prev_y, new_y, new_x, tile.TILETYPES.dung_floor)
                     else:
                         # first move vertically, then horizontally
-                        self.util.create_v_tunnel(mapa, prev_y, new_y, prev_x, room.TILETYPES.dung_floor)
-                        self.util.create_h_tunnel(mapa, prev_x, new_x, new_y, room.TILETYPES.dung_floor)
+                        self.util.create_v_tunnel(mapa, prev_y, new_y, prev_x, tile.TILETYPES.dung_floor)
+                        self.util.create_h_tunnel(mapa, prev_x, new_x, new_y, tile.TILETYPES.dung_floor)
 
                 # finally, append the new room to the list
                 rooms.append(new_room)
@@ -328,7 +328,7 @@ class Dungeon2(Map):
 
         self.stx,self.sty = (tcod.random_get_int(self.rg, rooms[0].x1 + 1, rooms[0].x2),
                              tcod.random_get_int(self.rg, rooms[0].y1 + 1, rooms[0].y2))
-        mapa[self.stx][self.sty] = room.Tile(room.TILETYPES.stairs)
+        mapa[self.stx][self.sty] = tile.Tile(tile.TILETYPES.stairs)
 
         return rooms
 
@@ -376,7 +376,7 @@ class Classrooms(Map):
 
         Arguments:
           dims - map dimensions
-          mapa - a 2D list which holds room.Tile instances
+          mapa - a 2D list which holds tile.Tile instances
 
         Returns:
           room.roomgeo list of the generated rooms in the map
@@ -421,7 +421,7 @@ class Classrooms2(Map):
 
         Arguments:
           dims - map dimensions
-          mapa - a 2D list which holds room.Tile instances
+          mapa - a 2D list which holds tile.Tile instances
 
         Returns:
           room.roomgeo list of the generated rooms in the map
@@ -466,7 +466,7 @@ class Cave(Map):
 
         Arguments:
           dims - map dimensions
-          mapa - a 2D list which holds room.Tile instances
+          mapa - a 2D list which holds tile.Tile instances
 
         Returns:
           room.roomgeo list of the generated rooms in the map
@@ -498,7 +498,7 @@ class Labyrinth(Map):
 
         Arguments:
           dims - map dimensions
-          mapa - a 2D list which holds room.Tile instances
+          mapa - a 2D list which holds tile.Tile instances
 
         Returns:
           room.roomgeo list of the generated rooms in the map
