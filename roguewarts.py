@@ -74,7 +74,7 @@ import game.game as game
 import game.util as util
 
 GAME_NAME = "RogueWarts"
-GAME_VERSION = "0.1 alpha-1"
+GAME_VERSION = "0.1"
 
 log = None
 loglevel = logging.INFO
