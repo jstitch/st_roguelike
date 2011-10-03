@@ -42,6 +42,7 @@ class UI:
       clear_obj
 
     Variables:
+      SCREEN_DIMS    - minimum screen dimensions
       ui             - the UI lib wrapper
       areas          - the areas for displaying things on screen
       maxx, maxy     - screen max coordinates according to UI
@@ -216,7 +217,7 @@ class UI:
 
         Arguments:
           level : the level which map will be rendered
-          x, y  : intended center coordinates of the map
+          (x,y) : intended center coordinates of the map
         """
         try:
             if x < 0 or y < 0 or x > level.mapa.w - 1 or y > level.mapa.h - 1:
@@ -274,7 +275,7 @@ class UI:
 
         Arguments:
           area : the name of the area to refresh, or 'all' to refresh
-          all the screen
+          all the screen. Default: 'all'
         """
         try:
             if area == 'all':

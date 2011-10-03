@@ -48,9 +48,10 @@ class Object:
           name    : name to be used for description of the object
           blocks  : whether the objects blocks the pass of
                     player/monsters or not (default: NO)
-          fighter : fighter component, if object is a monster/player
-          ai      : ai component, if object is a monster
-          item    : item component, if object is a item
+          fighter : fighter component, if object is a
+                    monster/player. Default: None
+          ai      : ai component, if object is a monster. Default: None
+          item    : item component, if object is a item. Default: None
         """
         (self.x, self.y) = (x,y)
         self.char = char

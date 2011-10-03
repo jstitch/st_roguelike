@@ -27,9 +27,8 @@ roguelike support, independent of the UI issues.
    So, some changes were made to the standard distributed libtcod
    library, so that graphics won't get initialized at the very
    beginning when using any other functionality, allowing a remote
-   session of the game to run cleanly. Please refer to libtcod source
-   code for more information on using the library without graphics
-   support.
+   session of the game to run cleanly. There is a patch to achieve
+   this for libtcod version 1.5.0 inside the libtcod directory.
 
    If you do not intend to run RogueWarts in a remote session, then no
    changes to libtcod are needed, as long as the graphics environment

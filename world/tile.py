@@ -118,7 +118,7 @@ class Tile:
         Initializes a tile.
 
         Arguments:
-          tipo - the type of the tile. Defaults to a wall
+          tipo - the type of the tile. Default: TILETYPES.wall
         """
         self.tipo = tipo
         # 'explored by the player' status

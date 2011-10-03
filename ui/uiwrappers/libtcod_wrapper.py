@@ -1,5 +1,21 @@
 """
 libtcod_wrapper.py
+
+libtcod graphical UI library wrapper for RogueWarts.
+
+For RogueWarts UI purposes, a class is a UI wrapper if it implements
+certain methods. Look for the class documentation to see what methods
+they are.
+
+  integer LIMIT_FPS : frames per second constant. Since input is
+                      non-blocking, this number is required for
+                      libtcod consoles. This would allow, in theory, a
+                      real time game too.
+
+  class libtcod_wrapper : implementation for RogueWarts UI using
+                          libtcod
+
+  func getcolorbyname : gets a libtcod color from a string name
 """
 
 import libtcod.libtcodpy as libtcod
@@ -13,16 +29,57 @@ log = logging.getLogger('roguewarts.curses_wrapper')
 LIMIT_FPS = 20
 
 class libtcod_wrapper:
-    """'Interface' for using libtcod as UI library."""
+    """
+    Implementation for using libtcod as UI library.
+
+    Methods:
+      __init__
+      init
+      getareadims
+      close
+      is_closed
+      getkey
+      flush
+      message
+      render
+      test
+      test_area
+
+    Variables:
+      con          - libtcod console representing the whole screen
+    """
     def __init__(self):
-        """"Init interface."""
+        """
+        Initialize variables.
+        """
         self.con = None
 
     def init(self, (width, height), areas, maximize, forcedim=False):
         """
-        Intialize interface.
+        Properly initialize UI wrapper.
 
-        Returns screen size in (x,y) tuple.
+        Initializes libtcod console with:
+         -root console for game window
+         -font to use
+         -FPS
+
+        Also determines screen size.
+
+        Finally, initializes each game area as a libtcod console.
+
+        Arguments:
+
+          (minwidth, minheight) : the minimum expected dimensions for
+                                  the screen
+          areas                 : areas dictionary (see package documentation for more
+                                  info)
+          maximize              : maximize screen dimensions. Default: False
+          forcemindims          : forces screen dimensions to maximum allowed by the
+                                  terminal. Default: False
+
+        Returns:
+          tuple with screen size in (x,y), negative numbers if
+          terminal doesn't satisfies minimum requirements
         """
         libtcod.console_set_custom_font(fontFile='data/arial12x12.png', flags=libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 
@@ -74,19 +131,50 @@ class libtcod_wrapper:
         return (width, height)
 
     def getareadims(self, area):
-        """Get area dimensions."""
+        """
+        Get area dimensions.
+
+        Arguments:
+          area : the area which dimensions are required
+
+        Returns:
+          tuple with area dimensions (width, height)
+        """
         return (area['w'], area['h'])
 
     def close(self):
-        """Terminate."""
+        """
+        Terminates UI.
+
+        Since libtcod doesn't need any closing routines, it just
+        passes.
+        """
         pass
 
     def is_closed(self):
-        """Tells if user closes window."""
+        """
+        Tells if user closes window.
+
+        Curses has no 'windows' interface for the user to close via
+        some button, external to the mechanisms of the game itself (as
+        in other UIs, where maybe an X button or Alt-F4 key
+        combination allows to close the program), so it always returns
+        False.
+
+        Return:
+          boolean telling if UI has been closed by the user.
+        """
         return libtcod.console_is_window_closed()
 
     def getkey(self):
-        """Get a key."""
+        """
+        Get a key.
+
+        Manages user input, using non-blocking methods.
+
+        Returns:
+          ASCII code for an alphanumeric key, else libtcod code
+        """
         key = libtcod.console_check_for_keypress(True)
         if key.vk == libtcod.KEY_NONE:
             return None
@@ -95,14 +183,29 @@ class libtcod_wrapper:
         return chr(key.c)
 
     def flush(self, area):
-        """Flush screen."""
+        """
+        Flush screen area.
+
+        Arguments:
+          area : the area to be flushed
+        """
         libtcod.console_blit(area['con'],
                              0, 0, area['w'], area['h'],
                              0, area['x'], area['y'])
         libtcod.console_flush()
 
     def message(self, queue, mess_area):
-        """Display message queue in the message area."""
+        """
+        Displays a message queue in the message area.
+
+        It takes only the last messages from the queue, depending on
+        the screen area height. It also wraps up message texts when
+        message length is too long.
+
+        Arguments:
+          queue     : game's messages queue
+          mess_area : the screen area where messages are displayed
+        """
         libtcod.console_clear(mess_area['con'])
 
         qmess = []
@@ -126,7 +229,32 @@ class libtcod_wrapper:
                 break
 
     def render(self, level, x, y, minx, miny, maxx, maxy, main_area):
-        """Render current level."""
+        """
+        Renders current level.
+
+        Takes the level map and draws each tile on it, according to
+        its properties.
+
+        Since the map may be bigger (or smaller) than the screen, it
+        makes some calculations to center (or try it at best) on the
+        given (x,y) coordinates.
+
+        TODO:
+          - draw level objects. It just draws the map (and the player
+            but just in a testing manner)
+          - instead of drawing from level.mapa, ui.py should call a
+            draw routing in the wrapper, which should receive the
+            contents to be drawn in a specific area, without any game
+            details being revealed here. This would also remove the
+            previous message() method
+
+        Arguments:
+          level       : the world.level with the map to render
+          (x,y)       : the coordinates to be the center of the drawing
+          (minx,miny) : the minimum coordinates from the map to be drawn
+          (maxx,maxy) : the maximum coordinates from the map to be drawn
+          main_area   : the area where the map is to be drawn
+        """
         libtcod.console_clear(main_area['con'])
 
         map_ = level.mapa
@@ -162,7 +290,14 @@ class libtcod_wrapper:
         self.flush(main_area)
 
     def test(self, areas):
-        """Test routine."""
+        """
+        Test routine.
+
+        Draws some test things in each area.
+
+        Arguments:
+          areas : the areas dictionary
+        """
         # blit messages
         self.test_area(areas['messages'], libtcod.red, libtcod.black)
 
@@ -181,7 +316,16 @@ class libtcod_wrapper:
         libtcod.console_credits()
 
     def test_area(self, area, fcolor, bcolor):
-        """Draw routines to test game areas."""
+        """
+        Draw routines to test game areas.
+
+        Draws some test things in a specific area.
+
+        Arguments:
+          area   : area to be tested
+          fcolor : foreground color to use for test
+          bcolor : background color to use for test
+        """
         libtcod.console_set_background_color(area['con'], bcolor)
         libtcod.console_set_foreground_color(area['con'], fcolor)
         libtcod.console_clear(area['con'])
@@ -193,5 +337,14 @@ class libtcod_wrapper:
                              0, area['x'], area['y'])
 
 def getcolorbyname(strcolorname):
-    """Get libtcod color from name."""
+    """
+    Get libtcod color from name.
+    
+    Arguments:
+      strcolorname : the name of the color to retrieve from libtcod
+                     library
+
+    Returns:
+      libtcod color
+    """
     return getattr(libtcod, strcolorname, libtcod.white)

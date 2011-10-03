@@ -1,0 +1,13 @@
+Index: src/sys_c.c
+===================================================================
+--- src/sys_c.c	(revisión: 542)
++++ src/sys_c.c	(copia de trabajo)
+@@ -516,7 +516,7 @@
+ #else
+ 	#ifndef TCOD_MACOSX
+ 	void __attribute__ ((constructor)) DllMain() {
+-		TCOD_sys_startup();
++	  //		TCOD_sys_startup();
+ 	}
+ 	#endif
+ #endif

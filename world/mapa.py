@@ -149,7 +149,8 @@ class Map:
         Arguments:
           tipo    - MAPTYPES name
           rg      - level's random number generator
-          roomgeo - geometrics for the rooms in this map
+          roomgeo - geometrics for the rooms in this map. Default:
+                    room.Rect
         """
         (self.w, self.h) = DEF_MAP_DIMS
         self.mapa = None
@@ -188,7 +189,7 @@ class Map:
         Gets the coordinates for the stairs in the level
 
         Arguments:
-          st - type of stairs
+          st - type of stairs. Default: 'start'
              'start' - initial start stairs for the level
 
         Returns:
@@ -264,9 +265,12 @@ class Dungeon2(Map):
         Arguments:
           (width, height) - map dimensions
           mapa            - a 2D list which holds tile.Tile instances
-          maxrooms        - parameter, max number of rooms to be generated
-          room_min_size   - parameter, min size for the generated rooms
-          room_max_size   - parameter, max size for the generated rooms
+          maxrooms        - parameter, max number of rooms to be
+                            generated. Default: 50
+          room_min_size   - parameter, min size for the generated
+                            rooms. Default: 30
+          room_max_size   - parameter, max size for the generated
+                            rooms. Default: 10
 
         Returns:
           room.roomgeo list of the generated rooms in the map
@@ -339,7 +343,7 @@ class Dungeon2(Map):
         Gets the coordinates for the stairs in the level
 
         Arguments:
-          st - type of stairs
+          st - type of stairs. Default: 'start'
              'start' - initial start stairs for the level
 
         Returns:

@@ -1,5 +1,24 @@
 """
 curses_wrapper.py
+
+NCurses graphical UI library wrapper for RogueWarts.
+
+For RogueWarts UI purposes, a class is a UI wrapper if it implements
+certain methods. Look for the class documentation to see what methods
+they are.
+
+NOTE: In theory, using curses as UI library, may allow to run the game
+in remote SSH/telnet sessions. BUT libtcod (which is also used for
+other game-logic/non-graphic thigs), requires the game to be run
+locally. At the roguecentral forums, I've been searching for a
+possible solution to this. Right now libtcod won't allow remote
+running, but recompiling it with certain changes in the libtcod
+sourcode may allow this (note that this would only be necessary in the
+'server' on which the game would run). I included a patch for libtcod
+1.5.0 to achieve this.
+
+  class curses_wrapper : implementation for RogueWarts UI using
+                         NCurses
 """
 
 import curses
@@ -11,17 +30,33 @@ import game.util as util
 
 log = logging.getLogger('roguewarts.curses_wrapper')
 
-# In theory, using curses as UI library, may allow to run the game in remote
-# SSH/telnet sessions. BUT libtcod (which is also used for other
-# game-logic/non-graphic thigs), requires the game to be run locally. At the
-# roguecentral forums, I've been searching for a possible solution to
-# this. Right now libtcod won't allow remote running, but recompiling it with
-# certain changes in the libtcod sourcode may allow this (note that this would
-# only be necessary in the 'server' on which the game would run).
 class curses_wrapper:
-    """'Interface' for using curses as UI library."""
+    """
+    Implementation for using ncurses as UI library.
 
-    # http://docs.python.org/library/curses.html#constants
+    Methods:
+      __init__
+      init
+      getareadims
+      close
+      is_closed
+      getkey
+      flush
+      message
+      render
+      test
+      test_area
+
+    Variables:
+      KEY_MAP      - key mapping between ncurses keys and libtcod
+      COLORS       - color mapping between ncurses colors and libtcod
+      scr          - ncurses WindowObject representing the whole screen
+      (maxx, maxy) - whole screen dimensions
+    """
+
+    """Key mapping between ncurses keys and libtcod ones. I give
+    preference for libtocd codes, so a mapping is
+    necessary. http://docs.python.org/library/curses.html#constants"""
     KEY_MAP = {
         curses.KEY_LEFT  : libtcod.KEY_LEFT,
         curses.KEY_RIGHT : libtcod.KEY_RIGHT,
@@ -38,6 +73,8 @@ class curses_wrapper:
         27               : libtcod.KEY_ESCAPE
         }
 
+    """Colors mapping between ncurses color combinations and libtcod
+    common color names. Again, I give preference to libtcod here."""
     COLORS = {
         'black'     : {'n':  1, 'fg': curses.COLOR_BLACK,   'bg': curses.COLOR_BLACK},
         'red'       : {'n':  2, 'fg': curses.COLOR_RED,     'bg': curses.COLOR_BLACK},
@@ -75,14 +112,41 @@ class curses_wrapper:
         }
 
     def __init__(self):
-        """Init interface."""
+        """
+        Initialize variables.
+        """
         self.scr = None
 
     def init(self, (minwidth, minheight), areas, maximize=False, forcemindims=False):
         """
-        Intialize interface.
+        Properly initialize UI wrapper.
 
-        Returns screen size in (y,x) tuple.
+        Initializes ncurses screen with:
+         -noecho
+         -cbreak
+         -colors
+         -cursor off
+         -keypad on
+         -nodelay on
+         -inits appropriate color pairs
+
+        Also determines screen size.
+
+        Finally, initializes each game area as a ncurses subwindow.
+
+        Arguments:
+
+          (minwidth, minheight) : the minimum expected dimensions for
+                                  the screen
+          areas                 : areas dictionary (see package documentation for more
+                                  info)
+          maximize              : maximize screen dimensions. Default: False
+          forcemindims          : forces screen dimensions to maximum allowed by the
+                                  terminal. Default: False
+
+        Returns:
+          tuple with screen size in (x,y), negative numbers if
+          terminal doesn't satisfies minimum requirements
         """
         self.scr = curses.initscr()
         curses.noecho()
@@ -151,21 +215,52 @@ class curses_wrapper:
         return (self.maxx,self.maxy)
 
     def getareadims(self, area):
-        """Get area dimensions."""
+        """
+        Get area dimensions.
+
+        Arguments:
+          area : the area which dimensions are required
+
+        Returns:
+          tuple with area dimensions (width, height)
+        """
         return (area['w'], area['h'])
 
     def close(self):
-        """Terminate."""
+        """
+        Terminates UI.
+
+        Closes ncurses.
+        """
         curses.nocbreak()
         curses.echo()
         curses.endwin()
 
     def is_closed(self):
-        """Tells if user closes window."""
+        """
+        Tells if user closes window.
+
+        NCurses has no 'windows' interface for the user to close via
+        some button, external to the mechanisms of the game itself (as
+        in other UIs, where maybe an X button or Alt-F4 key
+        combination allows to close the program), so it always returns
+        False.
+
+        Return:
+          boolean telling if UI has been closed by the user.
+        """
         return False
 
     def getkey(self):
-        """Get a key."""
+        """
+        Get a key.
+
+        Manages user input, using non-blocking methods.
+
+        Returns:
+          ASCII code for an alphanumeric key, else a mapped key (see
+          KEY_MAP dictionary)
+        """
         key = self.scr.getch()
         if key == curses.ERR:
             return None
@@ -177,11 +272,26 @@ class curses_wrapper:
         return chr(key)
 
     def flush(self, area):
-        """Flush screen."""
+        """
+        Flush screen area.
+
+        Arguments:
+          area : the area to be flushed
+        """
         area['con'].refresh()
 
     def message(self, queue, mess_area):
-        """Display a message queue in the message area."""
+        """
+        Displays a message queue in the message area.
+
+        It takes only the last messages from the queue, depending on
+        the screen area height. It also wraps up message texts when
+        message length is too long.
+
+        Arguments:
+          queue     : game's messages queue
+          mess_area : the screen area where messages are displayed
+        """
         mess_area['con'].clear()
 
         qmess = []
@@ -208,7 +318,32 @@ class curses_wrapper:
         self.flush(mess_area)
 
     def render(self, level, x, y, minx, miny, maxx, maxy, main_area):
-        """Render current level."""
+        """
+        Renders current level.
+
+        Takes the level map and draws each tile on it, according to
+        its properties.
+
+        Since the map may be bigger (or smaller) than the screen, it
+        makes some calculations to center (or try it at best) on the
+        given (x,y) coordinates.
+
+        TODO:
+          - draw level objects. It just draws the map (and the player
+            but just in a testing manner)
+          - instead of drawing from level.mapa, ui.py should call a
+            draw routing in the wrapper, which should receive the
+            contents to be drawn in a specific area, without any game
+            details being revealed here. This would also remove the
+            previous message() method
+
+        Arguments:
+          level       : the world.level with the map to render
+          (x,y)       : the coordinates to be the center of the drawing
+          (minx,miny) : the minimum coordinates from the map to be drawn
+          (maxx,maxy) : the maximum coordinates from the map to be drawn
+          main_area   : the area where the map is to be drawn
+        """
         main_area['con'].clear()
 
         map_ = level.mapa
@@ -225,6 +360,7 @@ class curses_wrapper:
                 visible = True # libtcod.map_is_in_fov(fov_map, x, y)
                 try:
                     tile = map_.mapa[mx][my]
+                # BUG: sometimes None appears on the map(?!)
                 except Exception as e:
                     if util.debug:
                         c += 1
@@ -247,12 +383,19 @@ class curses_wrapper:
                     # since now it's visible, mark it as explored
                     tile.explored = True
         if util.debug:
-            log.debug("aparecio none %d veces" % c)
+            log.debug("none appeared %d times" % c)
 
         self.flush(main_area)
 
     def test(self, areas):
-        """Test routine."""
+        """
+        Test routine.
+
+        Draws some test things in each area.
+
+        Arguments:
+          areas : the areas dictionary
+        """
         self.scr.clear()
 
         # blit messages
@@ -273,7 +416,16 @@ class curses_wrapper:
         self.scr.addstr(self.maxy//2, self.maxx//2, curses.__name__)
 
     def test_area(self, area, fcolor, bcolor):
-        """Draw routines to test game areas."""
+        """
+        Draw routines to test game areas.
+
+        Draws some test things in a specific area.
+
+        Arguments:
+          area   : area to be tested
+          fcolor : foreground color to use for test
+          bcolor : background color to use for test
+        """
         area['con'].bkgd(' ', curses.A_DIM)
         area['con'].box()
         area['con'].addstr(0, area['w'] // 2 - (len(area['name']) // 2), area['name'], curses.color_pair(curses_wrapper.COLORS[fcolor]['n']))
