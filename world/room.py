@@ -13,6 +13,9 @@ Coordinates in this classes are relative to the map ones.
   class Circle       : base class for circular rooms
 
   class Hexag        : base class for hexagonal rooms
+
+TODO:
+  - implement classes for geometrics different from the Rect one.
 """
 
 class Rect:
@@ -60,8 +63,9 @@ class Rect:
         Returns:
           boolean, true if this room intersects with another room.
 
-        TODO: currently just supports intersection between rectangular
-              rooms.
+        TODO:
+          - currently just supports intersection between rectangular
+            rooms.
         """
         return (self.x1 <= other.x2 and self.x2 >= other.x1 and
                 self.y1 <= other.y2 and self.y2 >= other.y1)

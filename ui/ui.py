@@ -196,6 +196,12 @@ class UI:
 
         Arguments:
           queue : queue of util.Message objects
+
+        TODO:
+          - should manage the internals of messages queue in here
+            instead of the wrapper. Should only give the wrapper the
+            contents of the messages area to be drawn, perhaps to some
+            generic render method in there.
         """
         try:
             self.messages_queue = queue # backup queue
@@ -218,6 +224,12 @@ class UI:
         Arguments:
           level : the level which map will be rendered
           (x,y) : intended center coordinates of the map
+
+        TODO:
+          - should manage the internals of the main area in here
+            instead of the wrapper. Should only give the wrapper the
+            contents of the main area to be drawn, perhaps to some
+            generic render method in there.
         """
         try:
             if x < 0 or y < 0 or x > level.mapa.w - 1 or y > level.mapa.h - 1:

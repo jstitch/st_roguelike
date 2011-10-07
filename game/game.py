@@ -290,6 +290,14 @@ class Gameplay:
         Returns:
           string with result of action taken for the play method to
           interpret, from ACTIONS map
+
+        TODO:
+          - refactor to add actions coming from a
+            objects.player.Player class . Actions should come frome
+            the current update class but also from the specific type
+            of player. For example, movement actions should go in
+            certain type of Player, while 'quit' command is part of
+            the update class
         """
         # quit game
         if player_action == 'q' or player_action == tcod.KEY_ESCAPE:

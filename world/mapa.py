@@ -32,6 +32,9 @@ defined in here.
   class Labyrinth    : Labyrinthic corridors map
 
   class map_util     : Map utilities.
+
+TODO:
+  - implement generation for maps other than the Dungeon2 one.
 """
 
 import libtcod.libtcodpy as tcod

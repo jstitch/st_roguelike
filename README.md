@@ -102,3 +102,60 @@ I got a lot of ideas from this sources:
   here too. (http://kooneiform.wordpress.com/)
 - Some ideas were inspired in the source code for the Pyro roguelike
   game (http://sourceforge.net/projects/pyrogue/)
+
+TODO
+----
+
+Here is a list of some TODO's I've detected that should be
+addressed. They're kind of commented on the code too, in TODO sections
+on the pydoc.
+
+- Refactor the engine to add actions coming from a
+  objects.player.Player class. Actions should come frome the current
+  update class (for example the game.Game.Gameplay class) but also
+  from the specific type of player. For example, movement actions
+  should go in certain type of Player, while 'quit' command is part of
+  the update class.
+
+- That last ones means refactoring the objects.player.Player class
+  too. But also, I thing that the Player class should be some other
+  component to be added on a objects.Objeto class so instead of
+  representing a played character in the game by itself, the Player
+  gives this attribute to some specific Objeto instance (this could
+  add the possibility to control some given monster at certain part of
+  the game?). So a given Player class should have its own commands to
+  'play' the player in the Gameplay engine update instance...
+
+- In the world, levels should be initilized in a non-hard-coded way,
+  maybe reading the definition from some file.
+
+- Implement room geometrics other than the Rect one.
+
+- Intersection between rooms is done just for rectangular ones. Should
+  be generalized for other geometrics too.
+
+- Implement map generation for other types than the Dungeon2 one.
+
+- Implement __str__ method for the world.level.Level class. This
+  should draw the complete map of the level. It should be supported by
+  some method which returns an array of world.tile.Tile instances,
+  which may be used to draw the level in the UI.
+
+- Right now the rules for deciding the type of map to associate the
+  level on a given branch are HARD-CODED, must do this in another
+  way... (some kind of config file?  some kind of class or structure
+  holding this rules?).  Also, this rules defines, in a way, the
+  complete structure of the world (where each branch begins and
+  ends). This info should be delivered by the World itself, in
+  not-hard-coded rules too.
+
+- UI should manage the internals of messages queue and map render in
+  it, instead of in the wrapper. Should only give the wrapper the
+  contents of the messages/main/any area to be drawn, perhaps to some
+  generic render method in there.
+
+- UI Wrappers should draw level objects. It just draws the map (and
+  the player but just in a testing manner). The UI should call some
+  method in the level class to get Tiles or something to represent
+  what is it to be drawn. Then it should give it to some generic
+  render method in the wrapper.

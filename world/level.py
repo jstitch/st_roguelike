@@ -42,6 +42,10 @@ class Level:
                      Marauder's map
       branch       - The world's branch to which the level belongs
       mapa         - The associated map of the level
+
+    TODO:
+      - make __str__ method to print the level as a map with objects
+        (perhaps returning a tile.Tile array)
     """
     def __init__(self, numlevel, name, branch, rng):
         """
@@ -53,20 +57,23 @@ class Level:
         -A new level must have an associated map.
 
         Given a branch, the type of map to be associated must be
-        decided. Right now the rules for deciding this are HARD-CODED,
-        must do this in another way... (some kind of config file? some
-        kind of class or structure holding this rules?).
-
-        Also, this rules defines, in a way, the complete structure of
-        the world (where each branch begins and ends). This info
-        should be delivered by the World itself, in not-hard-coded
-        rules too.
+        decided.
 
         Arguments:
           numlevel - the level id number
           name     - the generic name for the level
           branch   - the branch in the world to which this level belongs
           rng      - the world's random number generator
+
+        TODO:
+          - Right now the rules for deciding the type of map to
+            associate the level on a given branch are HARD-CODED, must
+            do this in another way... (some kind of config file?  some
+            kind of class or structure holding this rules?).  Also,
+            this rules defines, in a way, the complete structure of
+            the world (where each branch begins and ends). This info
+            should be delivered by the World itself, in not-hard-coded
+            rules too.
         """
         self.objects = []
         self.players = []

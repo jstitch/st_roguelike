@@ -95,9 +95,10 @@ class World:
 
         ref: http://www.python.org/doc/essays/graphs.html
 
-        Levels should be initilized in a non-hard-coded way, maybe
-        reading the definition from some file. [CURRENTLY IT'S
-        HARD-CODED!]
+        TODO:
+          - Levels should be initilized in a non-hard-coded way, maybe
+            reading the definition from some file. [CURRENTLY IT'S
+            HARD-CODED!]
         """
         levels = [] # just a list of all the levels in the world
 

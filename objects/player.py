@@ -26,6 +26,12 @@ class Player(objeto.Object):
       __init__
 
     Variables:
+
+    TODO:
+      - refactor to add actions specific to the player here. Also, the
+        fighter component should be init at the Objeto class, not
+        here. Perhaps Player class should be another type of component
+        too?
     """
     def __init__(self, char, color, name, x, y):
         """
