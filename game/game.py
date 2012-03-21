@@ -147,7 +147,7 @@ class Game:
         self.curl = self.world.new_game()
         self.curp = self.world.players[0]
 
-        self.util.add_message(_("Welcome to RogueWarts anonymous!"), MESSAGETYPES['SUCCESS'])
+        self.util.add_message(_("Welcome to RogueWarts Guest!"), MESSAGETYPES['SUCCESS'])
         if util.debug:
             self.util.add_message("x:%d,y:%d" % (self.curp.x, self.curp.y), MESSAGETYPES['ALERT'])
 
