@@ -1,5 +1,5 @@
 """
-object.py
+objeto.py
 
 RogueWarts, object class and components.
 
