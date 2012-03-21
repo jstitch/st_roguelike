@@ -103,6 +103,12 @@ I got a lot of ideas from this sources:
 - Some ideas were inspired in the source code for the Pyro roguelike
   game (http://sourceforge.net/projects/pyrogue/)
 
+Known Bugs
+----------
+
+Dungeon type 2 generation may generate stairs in room's walls
+coordinates, instead of just inside room (not counting walls).
+
 TODO
 ----
 
