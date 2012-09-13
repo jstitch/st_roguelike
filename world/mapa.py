@@ -1,5 +1,5 @@
 """
-map.py
+mapa.py
 
 RogueWarts map.
 
