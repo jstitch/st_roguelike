@@ -137,9 +137,9 @@ on the pydoc.
 
 - That last ones means refactoring the objects.player.Player class
   too. But also, I think that the Player class should be some other
-  component to be added on a objects.Objeto class so instead of
+  component to be added on a objects.objeto.Object class so instead of
   representing a played character in the game by itself, the Player
-  gives this attribute to some specific Objeto instance (this could
+  gives this attribute to some specific Object instance (this could
   add the possibility to control some given monster at certain part of
   the game?). So a given Player class should have its own commands to
   'play' the player in the Gameplay engine update instance...
