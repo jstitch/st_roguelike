@@ -3,7 +3,7 @@ RogueWarts, the Harry Potter Roguelike Game
 
 A roguelike game themed on the Harry Potter world.
 
-The idea behind the game is to create an adventures games in the
+The idea behind the game is to create an adventure game in the
 roguelike genre, with its world based on the one created by
 J.K.Rowling in its Harry Potter series.
 
