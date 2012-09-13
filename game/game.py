@@ -4,16 +4,16 @@ game.py
 RogueWarts game control logic.
 
 I intend RogeWarts to be programmed in a fashion following certain
-architecture, like the ones seen in webapps (MVC).
+architecture, separating layers for logic, display and game control.
 
 Even if roguewarts.py holds the main routine and loop, game.py is
 intented to be the Control layer.
 
-Following the analogy, ui.py would be the View layer (supported by
-some specific ui wrapper), but including the input handling logic too.
+ui.py would be the Display layer (supported by some specific ui
+wrapper), but including the input handling logic too.
 
 And the rest of the classes (level.py, map.py, ai.py, etc.) would be
-the Model layer.
+the Logic layer.
 
 This module holds the following structures:
 
@@ -29,13 +29,13 @@ This module holds the following structures:
   class Game         : Control class for RogueWarts: game initialization
                        (including UI and loading/saving to disk),
                        transition between game states, initializing
-                       the Model
+                       the Logic
 
   class GameUtil     : Engine utilities (print user messages,)
 
   class Gameplay     : Manager class, methods to loop the game on the
                        PLAYING state.  Responds to user input, calls
-                       View routines, updates / uses the Model
+                       Display routines, updates / uses the Logic
                        routines
 """
 

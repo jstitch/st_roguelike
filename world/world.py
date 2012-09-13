@@ -20,7 +20,7 @@ is implemented for a single terminal, perhaps some UI for several
 terminals taking turns (via a network or something) should be needed
 for a multi-user game.
 
-  class World         : the world model class
+  class World         : the world logic class
 
   class WORLDBRANCHES : the branches on which the levels are grouped
 """

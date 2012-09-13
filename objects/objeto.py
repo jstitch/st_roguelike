@@ -3,7 +3,7 @@ objeto.py
 
 RogueWarts, object class and components.
 
-  class Object  : base Object model class
+  class Object  : base Object logic class
 
   class Fighter : fighter component
 
