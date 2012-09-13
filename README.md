@@ -53,16 +53,17 @@ Currently it may be played using the following graphical UI libraries:
 - Curses*
 - Libtcod**
 
-* For running through a remote server, libtcod library must be
-  recompiled. See the ui.uiwrappers package documentation for more
-  info on this. libtcod directory includes a patch for libtcod v1.5.0
-  to achieve this. If you are not planning to run the game through a
-  remote server, this patch and this note are irrelevant.
+(*) For running through a remote server, libtcod library must be
+    recompiled. See the ui.uiwrappers package documentation for more
+    info on this. libtcod directory includes a patch for libtcod
+    v1.5.0 to achieve this. If you are not planning to run the game
+    through a remote server, this patch and this note are irrelevant.
 
-** Default version of the game includes libtcod library compiled for a
-   Linux-64 architecture (with the aforementioned patch
-   applied). Please change your libtcod compilation according to your
-   system. Downloads at http://doryen.eptalys.net/libtcod/download/
+(**) Default version of the game includes libtcod library compiled for
+     a Linux-64 architecture (with the aforementioned patch
+     applied). Please change your libtcod compilation according to
+     your system. Downloads at
+     http://doryen.eptalys.net/libtcod/download/
 
 But more graphical UI libraries may be added. Please consult the pydoc
 documentation in the UI modules for more information.
