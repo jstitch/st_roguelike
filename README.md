@@ -82,7 +82,7 @@ Why so basic yet?
 Because I spent most of the time until now to program a kind-of
 framework for easy development (at least for myself).
 
-The frameworkd still has a lot of pending work to do, but at least it
+The framework still has a lot of pending work to do, but at least it
 now can support some game logic development without messing around too
 much with details about UI or game engine.
 
@@ -109,6 +109,8 @@ Known Bugs
 Dungeon type 2 generation may generate stairs in room's walls
 coordinates, instead of just inside room (not counting walls).
 
+Curses ui has problems with diagonal movement keys.
+
 TODO
 ----
 
@@ -124,7 +126,7 @@ on the pydoc.
   the update class.
 
 - That last ones means refactoring the objects.player.Player class
-  too. But also, I thing that the Player class should be some other
+  too. But also, I think that the Player class should be some other
   component to be added on a objects.Objeto class so instead of
   representing a played character in the game by itself, the Player
   gives this attribute to some specific Objeto instance (this could
@@ -165,3 +167,10 @@ on the pydoc.
   method in the level class to get Tiles or something to represent
   what is it to be drawn. Then it should give it to some generic
   render method in the wrapper.
+
+- Also, as you may have guessed, the fact that this is all done over a
+  kind-of-framework, the 'framework' logic may be separated in some
+  way, so that the 'framework' does something in a specific place, and
+  the game-logic living elsewhere, opening a lot of possibilities of
+  future development for any other themed roguelike games, with
+  different game rules for example.
