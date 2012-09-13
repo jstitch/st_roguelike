@@ -81,7 +81,9 @@ Project Status
 
 The current status of the game is a VERY BASIC development version
 which is just capable of:
+
 -Generating one tipe of level
+
 -Creating a player that can move through the level
 
 Why so basic yet?
