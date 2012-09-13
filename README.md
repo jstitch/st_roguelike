@@ -13,6 +13,9 @@ websites such as the Harry Potter Lexicon (hp-lexicon.org) to give the
 game a 'real' Harry Potter look, not to replay any scenes from the
 books/movies in it.
 
+You need the doryen library (libtcod v1.5.0) to run this
+game. Download at http://doryen.eptalys.net/libtcod/download/
+
 To play, just type:
 
   python roguewarts.py
@@ -30,7 +33,6 @@ crashed.
 Files Info
 ----------
 - roguewarts.py is the entrance to the game, where the main loop lives.
-- libtcod.so is the library which supports a lot of the game's internals.
 - data/ holds data files for the game
 - libtcod/ holds the python module for libtcod
 - game/ holds the game engine logic
@@ -38,6 +40,13 @@ Files Info
 - ui/ holds the UI logic
 - objects/ holds the objects-monsters-players logic
 - log/ stores the game logs
+- libtcod is needed for roguewarts to work. Please download it and add
+  it to the game root directory
+
+(The reason that libtcod is not included as part of the game files is
+because it's in fact an external library, not part of
+roguewarts. Also, you may need a different specific compilation of the
+doryen library, depending on your system)
 
 DEV Info
 --------
@@ -46,12 +55,12 @@ This game is developed using:
 
 - Python (2.7, but earliear 2.x versions are supported as long as
   libtcod is supported by them)
-- libtcod
+- libtcod v1.5.0
 
 Currently it may be played using the following graphical UI libraries:
 
-- Curses*
-- Libtcod**
+- Curses *
+- Libtcod **
 
 (*) For running through a remote server, libtcod library must be
     recompiled. See the ui.uiwrappers package documentation for more
@@ -59,9 +68,7 @@ Currently it may be played using the following graphical UI libraries:
     v1.5.0 to achieve this. If you are not planning to run the game
     through a remote server, this patch and this note are irrelevant.
 
-(**) Default version of the game includes libtcod library compiled for
-     a Linux-64 architecture (with the aforementioned patch
-     applied). Please change your libtcod compilation according to
+(**) Please download or compile your libtcod installation according to
      your system. Downloads at
      http://doryen.eptalys.net/libtcod/download/
 
