@@ -94,12 +94,14 @@ def config_logger(filename = 'roguewarts.log'):
         if not os.path.exists('log/'):
             os.mkdir('log/')
         logging.config.fileConfig('logging.conf')
-    except ConfigParser.NoOptionError:
+    except ConfigParser.NoOptionError as nooerr:
         fh = logging.handlers.RotatingFileHandler('log/' + filename, "a", maxBytes=1048576, backupCount=10)
         fh.setLevel(loglevel)
         fh.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
         log = logging.getLogger('roguewarts')
         log.addHandler(fh)
+    else:
+        log = logging.getLogger('roguewarts')
 
 class RogueWarts:
     """
