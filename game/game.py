@@ -290,59 +290,13 @@ class Gameplay:
         Returns:
           string with result of action taken for the play method to
           interpret, from ACTIONS map
-
-        TODO:
-          - refactor to add actions coming from a
-            objects.player.Player class . Actions should come frome
-            the current update class but also from the specific type
-            of player. For example, movement actions should go in
-            certain type of Player, while 'quit' command is part of
-            the update class
         """
         # quit game
         if player_action == 'q' or player_action == tcod.KEY_ESCAPE:
             return self.ACTIONS['exit-game']
 
-        # move player
-        # UP
-        if player_action == tcod.KEY_UP or player_action == tcod.KEY_KP8:
-            if self.engine.curp.y > 0:
-                self.engine.curp.move(0,-1)
-                return self.ACTIONS['took-turn']
-        # DOWN
-        elif player_action == tcod.KEY_DOWN or player_action == tcod.KEY_KP2:
-            if self.engine.curp.y < self.engine.curl.mapa.h - 1:
-                self.engine.curp.move(0,1)
-                return self.ACTIONS['took-turn']
-        # LEFT
-        elif player_action == tcod.KEY_LEFT or player_action == tcod.KEY_KP4:
-            if self.engine.curp.x > 0:
-                self.engine.curp.move(-1,0)
-                return self.ACTIONS['took-turn']
-        # RIGHT
-        elif player_action == tcod.KEY_RIGHT or player_action == tcod.KEY_KP6:
-            if self.engine.curp.x < self.engine.curl.mapa.w - 1:
-                self.engine.curp.move(1,0)
-                return self.ACTIONS['took-turn']
-        # LEFT-UP
-        elif player_action == tcod.KEY_KP7:
-            if self.engine.curp.x > 0 and self.engine.curp.y > 0:
-                self.engine.curp.move(-1,-1)
-                return self.ACTIONS['took-turn']
-        # RIGHT-UP
-        elif player_action == tcod.KEY_KP9:
-            if self.engine.curp.x < self.engine.curl.mapa.w - 1 and self.engine.curp.y > 0:
-                self.engine.curp.move(1,-1)
-                return self.ACTIONS['took-turn']
-        # LEFT-DOWN
-        elif player_action == tcod.KEY_KP1:
-            if self.engine.curp.x > 0 and self.engine.curp.y < self.engine.curl.mapa.h - 1:
-                self.engine.curp.move(-1,1)
-                return self.ACTIONS['took-turn']
-        # RIGHT-DOWN
-        elif player_action == tcod.KEY_KP3:
-            if self.engine.curp.x < self.engine.curl.mapa.w - 1 and self.engine.curp.y < self.engine.curl.mapa.h - 1:
-                self.engine.curp.move(1,1)
-                return self.ACTIONS['took-turn']
+        # take player action
+        if self.engine.curp.action(player_action) == self.ACTIONS['took-turn']:
+            return self.ACTIONS['took-turn']
 
         return self.ACTIONS['didnt-take-turn']
