@@ -31,7 +31,8 @@ import time, calendar
 
 import level
 import mapa
-import objects.player as player
+import objects.player
+import objects.objeto as objeto
 
 log = logging.getLogger('roguewarts.world')
 
@@ -123,7 +124,9 @@ class World:
           level.Level number 1
         """
         # create initial player
-        self.players.append(player.Player('@', 'blue', 'Player', 0, 0))
+        plyr = objeto.Object('@', 'blue', 'Player', 0, 0, player=objects.player.Player())
+        plyr.player.init()
+        self.players.append(plyr)
 
         initlev = self.levels['init'][0]
 
