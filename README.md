@@ -133,7 +133,7 @@ on the pydoc.
   update class (for example the game.Game.Gameplay class) but also
   from the specific type of player. For example, movement actions
   should go in certain type of Player, while 'quit' command is part of
-  the update class.
+  the update class. (DONE!)
 
 - That last ones means refactoring the objects.player.Player class
   too. But also, I think that the Player class should be some other
