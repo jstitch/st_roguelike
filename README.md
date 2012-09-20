@@ -142,7 +142,7 @@ on the pydoc.
   gives this attribute to some specific Object instance (this could
   add the possibility to control some given monster at certain part of
   the game?). So a given Player class should have its own commands to
-  'play' the player in the Gameplay engine update instance...
+  'play' the player in the Gameplay engine update instance... (DONE!)
 
 - In the world, levels should be initilized in a non-hard-coded way,
   maybe reading the definition from some file.
