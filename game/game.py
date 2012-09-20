@@ -296,7 +296,7 @@ class Gameplay:
             return self.ACTIONS['exit-game']
 
         # take player action
-        if self.engine.curp.action(player_action) == self.ACTIONS['took-turn']:
+        if self.engine.curp.player.action(player_action) == self.ACTIONS['took-turn']:
             return self.ACTIONS['took-turn']
 
         return self.ACTIONS['didnt-take-turn']
