@@ -56,6 +56,9 @@ class Message:
         self.message = message
         self.properties = properties
 
+    def __str__(self):
+        return self.message
+
 class RoguewartsException(Exception):
     """
     Generic game exception.

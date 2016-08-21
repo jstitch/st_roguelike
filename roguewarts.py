@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """
 roguewarts.py
 
@@ -94,14 +94,12 @@ def config_logger(filename = 'roguewarts.log'):
         if not os.path.exists('log/'):
             os.mkdir('log/')
         logging.config.fileConfig('logging.conf')
-    except ConfigParser.NoOptionError as nooerr:
+    except ConfigParser.NoOptionError:
         fh = logging.handlers.RotatingFileHandler('log/' + filename, "a", maxBytes=1048576, backupCount=10)
         fh.setLevel(loglevel)
         fh.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
         log = logging.getLogger('roguewarts')
         log.addHandler(fh)
-    else:
-        log = logging.getLogger('roguewarts')
 
 class RogueWarts:
     """
@@ -129,7 +127,7 @@ class RogueWarts:
         except Exception as e:
             log.error(tbck.format_exc())
             raise util.RoguewartsException("initerror:" + str(e))
-        
+
     def run(self):
         """
         Run the game (main loop).

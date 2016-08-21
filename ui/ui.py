@@ -50,7 +50,7 @@ class UI:
     """
 
     """Minimum screen dimensions."""
-    SCREEN_DIMS = (105, 36)
+    SCREEN_DIMS = (105, 34)
 
     def __init__(self, uilib, uiparams):
         """
@@ -126,7 +126,7 @@ class UI:
         if (self.maxx, self.maxy) < (0, 0):
             self.ui.close()
             log.critical("Screen needs to be at least (%d, %d). Current size is (%d, %d)" %
-                         (self.SCREEN_DIMS, self.maxx * -1, self.maxy * -1))
+                         (self.SCREEN_DIMS[0], self.SCREEN_DIMS[1], self.maxx * -1, self.maxy * -1))
             raise Exception("ERROR: screen size is too low, you need at least (%d, %d)" % (self.SCREEN_DIMS))
 
         if util.debug:
@@ -246,7 +246,7 @@ class UI:
                 raise Exception("ERROR: could not determine draw area dimensions")
 
             level = level
-            
+
             # fov calculations... (shouldn't be here, should already be calculated elsewhere...)
 
             # determine map coordinates to begin rendering according to map size

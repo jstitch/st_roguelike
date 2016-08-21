@@ -27,7 +27,7 @@ MAX_ROOM_OBJECTS = {'monster': 3, 'item': 2}
 class Level:
     """
     A level in the world class.
-    
+
     Methods:
       __init__
       place_objects

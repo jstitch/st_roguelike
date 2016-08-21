@@ -37,7 +37,7 @@ class Object:
       curlevel - level at which this object is currently living
     """
     def __init__(self, char, color, name, x = -1, y = -1, blocks = False,
-                 player=None, fighter=None, ai=None, item=None):
+                 fighter=None, ai=None, item=None):
         """
         Initialize object.
 
@@ -48,8 +48,6 @@ class Object:
           name    : name to be used for description of the object
           blocks  : whether the objects blocks the pass of
                     player/monsters or not (default: NO)
-          player  : player component, if object may be used by a user
-                    (using the player's actions)
           fighter : fighter component, if object is a
                     monster/player. Default: None
           ai      : ai component, if object is a monster. Default: None
@@ -62,18 +60,9 @@ class Object:
         self.blocks = blocks
         self.curlevel = None
 
-        self.player = player
-        if self.player:
-            self.player.owner = self
         self.fighter = fighter
-        if self.fighter:
-            self.fighter.owner = self
         self.ai = ai
-        if self.ai:
-            self.ai.owner = self
         self.item = item
-        if self.item:
-            self.item.owner = self
 
     def move(self, dx, dy):
         """Move object to (x+dx, y+dy)."""
@@ -93,8 +82,8 @@ class Fighter:
     """
     Fighter component class.
 
-    This class should be composited along with some monster or player
-    Object to define that it can fight, be hitted, etc.
+    This class should be composited in some monster or player Object
+    to define that it can fight, be hitted, etc.
     """
     def __init__(self):
         pass

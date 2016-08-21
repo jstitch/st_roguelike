@@ -81,7 +81,7 @@ class libtcod_wrapper:
           tuple with screen size in (x,y), negative numbers if
           terminal doesn't satisfies minimum requirements
         """
-        libtcod.console_set_custom_font(fontFile='data/arial12x12.png', flags=libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+        libtcod.console_set_custom_font(fontFile='data/fonts/arial12x12.png', flags=libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 
         if forcedim:
             (width, height) = libtcod.sys_get_current_resolution()
@@ -222,8 +222,8 @@ class libtcod_wrapper:
 
         for i in range(mess_area['h']):
             try:
-                libtcod.console_set_foreground_color(mess_area['con'], getcolorbyname(qlines[i].properties['color']))
-                libtcod.console_print_left(mess_area['con'], 0, mess_area['h'] - i - 1, libtcod.BKGND_NONE, qlines[i].message)
+                libtcod.console_set_default_foreground(mess_area['con'], getcolorbyname(qlines[i].properties['color']))
+                libtcod.console_print_ex(mess_area['con'], 0, mess_area['h'] - i - 1, libtcod.BKGND_NONE, libtcod.LEFT, qlines[i].message)
                 self.flush(mess_area)
             except IndexError:
                 break
@@ -279,8 +279,8 @@ class libtcod_wrapper:
                 # it's visible
                 else:
                     # draw map tile with char/color <- as is since it is visible
-                    libtcod.console_set_back(main_area['con'], cx, cy, getcolorbyname(tile.tipo['color']), libtcod.BKGND_SET)
-                    libtcod.console_set_back(main_area['con'], conx + x - minx, cony + y - miny, getcolorbyname('red'), libtcod.BKGND_SET)
+                    libtcod.console_set_char_background(main_area['con'], cx, cy, getcolorbyname(tile.tipo['color']), libtcod.BKGND_SET)
+                    libtcod.console_set_char_background(main_area['con'], conx + x - minx, cony + y - miny, getcolorbyname('red'), libtcod.BKGND_SET)
                     # since now it's visible, mark it as explored
                     tile.explored = True
 
@@ -326,12 +326,12 @@ class libtcod_wrapper:
           fcolor : foreground color to use for test
           bcolor : background color to use for test
         """
-        libtcod.console_set_background_color(area['con'], bcolor)
-        libtcod.console_set_foreground_color(area['con'], fcolor)
+        libtcod.console_set_default_background(area['con'], bcolor)
+        libtcod.console_set_default_foreground(area['con'], fcolor)
         libtcod.console_clear(area['con'])
         libtcod.console_print_frame(area['con'], 0, 0, area['w'], area['h'], False, None, area['name'] + ": " + str(area))
         for i in range(area['h']):
-            libtcod.console_print_left(area['con'], 0, i, libtcod.BKGND_NONE, str(i + 1))
+            libtcod.console_print_ex(area['con'], 0, i, libtcod.BKGND_NONE, libtcod.LEFT, str(i + 1))
         libtcod.console_blit(area['con'],
                              0, 0, area['w'], area['h'],
                              0, area['x'], area['y'])
@@ -339,7 +339,7 @@ class libtcod_wrapper:
 def getcolorbyname(strcolorname):
     """
     Get libtcod color from name.
-    
+
     Arguments:
       strcolorname : the name of the color to retrieve from libtcod
                      library

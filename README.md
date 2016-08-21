@@ -133,7 +133,7 @@ on the pydoc.
   update class (for example the game.Game.Gameplay class) but also
   from the specific type of player. For example, movement actions
   should go in certain type of Player, while 'quit' command is part of
-  the update class. (DONE!)
+  the update class.
 
 - That last ones means refactoring the objects.player.Player class
   too. But also, I think that the Player class should be some other
@@ -142,7 +142,7 @@ on the pydoc.
   gives this attribute to some specific Object instance (this could
   add the possibility to control some given monster at certain part of
   the game?). So a given Player class should have its own commands to
-  'play' the player in the Gameplay engine update instance... (DONE!)
+  'play' the player in the Gameplay engine update instance...
 
 - In the world, levels should be initilized in a non-hard-coded way,
   maybe reading the definition from some file.

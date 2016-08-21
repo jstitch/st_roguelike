@@ -31,8 +31,7 @@ import time, calendar
 
 import level
 import mapa
-import objects.player
-import objects.objeto as objeto
+import objects.player as player
 
 log = logging.getLogger('roguewarts.world')
 
@@ -78,7 +77,8 @@ class World:
         """
         self.wrldseed = calendar.timegm(time.gmtime())
         log.debug("World seed: %s" % str(self.wrldseed))
-        self.wrldrg = tcod.random_new_from_seed(self.wrldseed)
+        # self.wrldrg = tcod.random_new_from_seed(self.wrldseed)
+        self.wrldrg = tcod.random_new()
 
         self.levels = {} # levels' empty graph
 
@@ -124,9 +124,7 @@ class World:
           level.Level number 1
         """
         # create initial player
-        plyr = objeto.Object('@', 'blue', 'Player', 0, 0, player=objects.player.Player())
-        plyr.player.init()
-        self.players.append(plyr)
+        self.players.append(player.Player('@', 'blue', 'Player', 0, 0))
 
         initlev = self.levels['init'][0]
 
