@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 """
 roguewarts.py
 
@@ -74,7 +75,7 @@ import game.game as game
 import game.util as util
 
 GAME_NAME = "RogueWarts"
-GAME_VERSION = "0.1"
+GAME_VERSION = "0.2"
 
 log = None
 loglevel = logging.INFO

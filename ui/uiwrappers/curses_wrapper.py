@@ -344,6 +344,7 @@ class curses_wrapper:
           (maxx,maxy) : the maximum coordinates from the map to be drawn
           main_area   : the area where the map is to be drawn
         """
+        from world.tile import TILETYPES
         main_area['con'].clear()
 
         map_ = level.mapa
@@ -374,8 +375,8 @@ class curses_wrapper:
                 else:
                     # draw map tile with char/color <- as is since it is visible
                     try:
-                        main_area['con'].addstr(cy, cx, tile.tipo['char'],
-                                                curses.color_pair(curses_wrapper.COLORS[tile.tipo['color']]['n']))
+                        main_area['con'].addstr(cy, cx, TILETYPES[tile.tipo]['char'].encode('utf8'),
+                                                curses.color_pair(curses_wrapper.COLORS[TILETYPES[tile.tipo]['color']]['n']))
                         main_area['con'].addstr(cony + y - miny, conx + x - minx, '@',
                                                 curses.color_pair(curses_wrapper.COLORS['red']['n']))
                     except Exception as e:

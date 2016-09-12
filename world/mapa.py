@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 mapa.py
 
@@ -39,6 +40,7 @@ TODO:
 
 import libtcod.libtcodpy as tcod
 import logging
+from codecs import open as copen
 
 import room
 import tile
@@ -66,20 +68,20 @@ class MAPTYPES:
 
     # classrooms, side by side, with central hallway
     classrooms   = {'name'       : 'Classrooms',
-                    'deftile'    : tile.TILETYPES.air,
-                    'makeparams' : None
+                    'deftile'    : 'air',
+                    'makeparams' : {}
                     }
 
     # classrooms, side by side, with hallway at a side surrounding a
     # central geometric empty (maybe with stairs) hole
     classrooms2 = {'name'       : 'Classrooms2',
-                   'deftile'    : tile.TILETYPES.air,
-                   'makeparams' : None
+                   'deftile'    : 'air',
+                   'makeparams' : {}
                    }
 
     # dungeon with rooms built side by side
     dungeon      = {'name'       : 'Dungeon',
-                    'deftile'    : tile.TILETYPES.rock,
+                    'deftile'    : 'rock',
                     'makeparams' : {'maxrooms'      : DUNG_ROOM_LIMS['num'],
                                     'room_min_size' : DUNG_ROOM_LIMS['min'],
                                     'room_max_size' : DUNG_ROOM_LIMS['max']}
@@ -87,7 +89,7 @@ class MAPTYPES:
 
     # standard 'roguelike' dungeon
     dungeon2    = {'name'       : 'Dungeon2',
-                   'deftile'    : tile.TILETYPES.rock,
+                   'deftile'    : 'rock',
                    'makeparams' : {'maxrooms'      : DUNG_ROOM_LIMS['num'],
                                    'room_min_size' : DUNG_ROOM_LIMS['min'],
                                    'room_max_size' : DUNG_ROOM_LIMS['max']}
@@ -95,26 +97,26 @@ class MAPTYPES:
 
     # a cave
     cave         = {'name'       : 'Cave',
-                    'deftile'    : tile.TILETYPES.rock,
-                    'makeparams' : None
+                    'deftile'    : 'rock',
+                    'makeparams' : {}
                     }
 
     # a wood
     wood         = {'name'       : 'Wood',
-                    'deftile'    : tile.TILETYPES.tree,
-                    'makeparams' : None
+                    'deftile'    : 'tree',
+                    'makeparams' : {}
                     }
 
     # labyrinth between rooms (instead of standard corridors/hallways)
     labyrinth    = {'name'       : 'Labyrinth',
-                    'deftile'    : tile.TILETYPES.wall,
-                    'makeparams' : None
+                    'deftile'    : 'wall',
+                    'makeparams' : {}
                     }
 
     # special map, probably loaded from data file
     special      = {'name'       : 'Special',
-                    'deftile'    : tile.TILETYPES.rock,
-                    'makeparams' : None
+                    'deftile'    : 'air',
+                    'makeparams' : {}
                     }
 
 class Map:
@@ -155,12 +157,12 @@ class Map:
           roomgeo - geometrics for the rooms in this map. Default:
                     room.Rect
         """
-        (self.w, self.h) = DEF_MAP_DIMS
-        self.mapa = None
-        self.util = map_util()
-        self.tipo = tipo
-        self.rg = rg
-        self.roomgeo = roomgeo
+        (self.w, self.h)     = DEF_MAP_DIMS
+        self.mapa            = None
+        self.util            = map_util()
+        self.tipo            = tipo
+        self.rg              = rg
+        self.roomgeo         = roomgeo
         (self.stx, self.sty) = (0,0)
 
         try:
@@ -305,7 +307,7 @@ class Dungeon2(Map):
                 # this means there are no intersections, so this room is valid
 
                 # "paint" it to the map's tiles
-                self.util.fill_rect_room(mapa, new_room, tile.TILETYPES.dung_floor)
+                self.util.fill_rect_room(mapa, new_room, 'dung_floor')
 
                 # center coordinates of new room, will be useful later
                 (new_x, new_y) = new_room.center()
@@ -320,12 +322,12 @@ class Dungeon2(Map):
                     # draw a coin (random number that is either 0 or 1)
                     if tcod.random_get_int(self.rg, 0, 1) == 1:
                         # first move horizontally, then vertically
-                        self.util.create_h_tunnel(mapa, prev_x, new_x, prev_y, tile.TILETYPES.dung_floor)
-                        self.util.create_v_tunnel(mapa, prev_y, new_y, new_x, tile.TILETYPES.dung_floor)
+                        self.util.create_h_tunnel(mapa, prev_x, new_x, prev_y, 'dung_floor')
+                        self.util.create_v_tunnel(mapa, prev_y, new_y, new_x, 'dung_floor')
                     else:
                         # first move vertically, then horizontally
-                        self.util.create_v_tunnel(mapa, prev_y, new_y, prev_x, tile.TILETYPES.dung_floor)
-                        self.util.create_h_tunnel(mapa, prev_x, new_x, new_y, tile.TILETYPES.dung_floor)
+                        self.util.create_v_tunnel(mapa, prev_y, new_y, prev_x, 'dung_floor')
+                        self.util.create_h_tunnel(mapa, prev_x, new_x, new_y, 'dung_floor')
 
                 # finally, append the new room to the list
                 rooms.append(new_room)
@@ -337,7 +339,7 @@ class Dungeon2(Map):
 
         self.stx,self.sty = (tcod.random_get_int(self.rg, rooms[0].x1 + 1, rooms[0].x2),
                              tcod.random_get_int(self.rg, rooms[0].y1 + 1, rooms[0].y2))
-        mapa[self.stx][self.sty] = tile.Tile(tile.TILETYPES.stairs)
+        mapa[self.stx][self.sty] = tile.Tile('inistairs')
 
         return rooms
 
@@ -516,6 +518,54 @@ class Labyrinth(Map):
         """
         log.debug("Building a labyrinth map")
         return []
+
+class Special(Map):
+    """
+    Builds a special map, loaded from a file.
+
+    Methods:
+      make_map
+    """
+    def make_map(self, dims, mapa, numlevel):
+        """
+        Make a special map, loaded from file.
+
+        Arguments:
+          dims - map dimensions
+          mapa - a 2D list which holds tile.Tile instances
+          numlevel - level number, which determines the filename in levels subdir
+
+        Returns:
+          room.roomgeo list of the rooms in the map
+          (corridors may be generated too, but they are not accounted
+          for).
+        """
+        rooms = []
+        x,y = 0,0
+        # file_chars = [ getattr(tile.TILETYPES, k)['file_char'] for k in tile.TILETYPES.__dict__.keys() if '__' not in k ]
+
+        with copen('world/levels/{}.lev'.format(str(numlevel).replace('-','m')), 'r', 'utf8') as f:
+            for l in f.readlines():
+                if y > DEF_MAP_DIMS[1]:
+                    raise Exception("ydim exceeds max")
+
+                x = 0
+                for c in [ char for char in l if char!=u"\n" ]:
+                    if x > DEF_MAP_DIMS[0]:
+                        raise Exception("xdim exceeds max")
+                    try:
+                        # mapa[x][y].tipo = [ getattr(tile.TILETYPES, k) for k in tile.TILETYPES.__dict__.keys()
+                        #                     if '__' not in k and getattr(tile.TILETYPES, k)['file_char']==c ][0]
+                        mapa[x][y].tipo = [ k for k,v in tile.TILETYPES.iteritems() if v['file_char']==c ][0]
+
+                        if c == u'h':
+                            self.stx, self.sty = x,y
+                    except IndexError:
+                        raise Exception("({},{}) : unrecognizable character '{}' in file {}.lev".format(x,y,c, str(numlevel).replace('-','m')))
+                    x += 1
+                y += 1
+
+        return rooms
 
 class map_util:
     """

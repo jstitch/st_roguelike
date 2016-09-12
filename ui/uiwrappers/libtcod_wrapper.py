@@ -255,6 +255,7 @@ class libtcod_wrapper:
           (maxx,maxy) : the maximum coordinates from the map to be drawn
           main_area   : the area where the map is to be drawn
         """
+        from world.tile import TILETYPES
         libtcod.console_clear(main_area['con'])
 
         map_ = level.mapa
@@ -279,10 +280,13 @@ class libtcod_wrapper:
                 # it's visible
                 else:
                     # draw map tile with char/color <- as is since it is visible
-                    libtcod.console_set_char_background(main_area['con'], cx, cy, getcolorbyname(tile.tipo['color']), libtcod.BKGND_SET)
+                    libtcod.console_put_char(main_area['con'], cx, cy, ' ' if TILETYPES[tile.tipo]['just_color'] else TILETYPES[tile.tipo]['char'].encode('utf8'), libtcod.BKGND_NONE)
+                    libtcod.console_set_char_background(main_area['con'], cx, cy, getcolorbyname(TILETYPES[tile.tipo]['color']), libtcod.BKGND_SET)
                     libtcod.console_set_char_background(main_area['con'], conx + x - minx, cony + y - miny, getcolorbyname('red'), libtcod.BKGND_SET)
                     # since now it's visible, mark it as explored
                     tile.explored = True
+        for p in level.players:
+            libtcod.console_put_char(main_area['con'], p.x, p.y, '@', libtcod.BKGND_NONE)
 
         # draw objects in map...
 

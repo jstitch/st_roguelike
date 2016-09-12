@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 level.py
 
@@ -18,6 +19,7 @@ import time, calendar
 
 import mapa
 import game.util as util
+from tile import TILETYPES
 
 log = logging.getLogger('roguewarts.level')
 
@@ -91,11 +93,15 @@ class Level:
         elif self.branch['name'] == 'woods':
             maptype = self.branch['maptypes'][0]
 
+        elif self.branch['name'] == 'from_file':
+            maptype = self.branch['maptypes'][0]
+            maptype['makeparams']['numlevel'] = numlevel
+
         if numlevel > 10 or numlevel < -10:
             maptype = mapa.MAPTYPES.labyrinth
 
         # debugging dungeons, remove True or condition
-        if util.debug or True:
+        if util.debug:
             maptype=mapa.MAPTYPES.dungeon2
 
         self.mapa = getattr(mapa, maptype['name'])(maptype, rng)
@@ -110,7 +116,7 @@ class Level:
         Returns:
           Boolean indicating if coordinates are blocked for movement.
         """
-        if self.mapa.mapa[x][y].tipo['block_pass'] == True:
+        if TILETYPES[self.mapa.mapa[x][y].tipo]['block_pass'] == True:
             return True
 
         for objeto in self.objects:

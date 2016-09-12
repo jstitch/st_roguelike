@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 world.py
 
@@ -54,6 +55,9 @@ class WORLDBRANCHES:
 
     woods      = {'name'    : 'woods',
                   'maptypes': [mapa.MAPTYPES.wood]}
+
+    from_file  = {'name'    : 'from_file',
+                  'maptypes': [mapa.MAPTYPES.special]}
 
     # hogsmeade, london, ministery, diagon_alley, gringotts, country (riddles,burrow,etc)
 
