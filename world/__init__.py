@@ -1,7 +1,7 @@
 """
 world package
 
-RogueWarts world data structures.
+RogueLike world data structures.
 
 See each module for individual documentation.
 """

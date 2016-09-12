@@ -2,7 +2,7 @@
 """
 world.py
 
-RogueWarts world.
+RogueLike world.
 
 The World holds all the game information which is not related to the
 UI or to the way the game evolves through time (which belongs to the
@@ -13,7 +13,7 @@ necessarily means that there will be a lot of users playing the same
 game. The players in the world are just a number of characters which a
 single user may handle in turns during the game. As if playing with
 several characters at once. It may also mean several users for the
-game, but RogueWarts is not conceived with this idea in mind. Several
+game, but RogueLike is not conceived with this idea in mind. Several
 tasks should be accomplished before implementing a multi-user game:
 right now there's only one FogOfWar for every player (so what one
 player discovers, the other players also see); also, right now the UI
@@ -34,7 +34,7 @@ import level
 import mapa
 import objects.player as player
 
-log = logging.getLogger('roguewarts.world')
+log = logging.getLogger('roguelike.world')
 
 class WORLDBRANCHES:
     """

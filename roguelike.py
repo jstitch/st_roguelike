@@ -1,15 +1,15 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-roguewarts.py
+roguelike.py
 
-RogueWarts, the Harry Potter Roguelike Game
+Roguelike Framework
 
-RogueWarts may use different graphical libraries for displaying the
+This game may use different graphical libraries for displaying the
 game. Curses is supported, but also libtcod, which BTW also gives
 support to the engine behind the game itself.
 
-Usage: python roguewarts.py [PARAMETERS]
+Usage: python roguelike.py [PARAMETERS]
 
 PARAMETERS:
 
@@ -35,7 +35,7 @@ PARAMETERS:
 
 This module also includes the following:
 
-  class Roguewarts           : RogueWarts main class.
+  class RogueLike            : RogueLike main class.
 
   function config_logger     : Configures the logging facitliy.
 
@@ -48,7 +48,7 @@ This module also includes the following:
   main routine
 
 
-RogueWarts, the Harry Potter Roguelike Game
+Roguelike
 Copyright (C) 2011 Javier Novoa C.
 
 This program is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 JNC - jstitch@gmail.com
-20/jan/2011
+12/sep/2016
 """
 
 import logging, logging.config, ConfigParser
@@ -74,13 +74,13 @@ import sys, getopt, os, traceback as tbck
 import game.game as game
 import game.util as util
 
-GAME_NAME = "RogueWarts"
+GAME_NAME = "RogueLike"
 GAME_VERSION = "0.2"
 
 log = None
 loglevel = logging.INFO
 
-def config_logger(filename = 'roguewarts.log'):
+def config_logger(filename = 'roguelike.log'):
     """
     Configure logging facility.
 
@@ -88,7 +88,7 @@ def config_logger(filename = 'roguewarts.log'):
 
     Arguments:
       filename : the name of the file to store the log into. Default:
-                 'roguewarts.log'
+                 'roguelike.log'
     """
     global log, loglevel
     try:
@@ -99,12 +99,12 @@ def config_logger(filename = 'roguewarts.log'):
         fh = logging.handlers.RotatingFileHandler('log/' + filename, "a", maxBytes=1048576, backupCount=10)
         fh.setLevel(loglevel)
         fh.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
-        log = logging.getLogger('roguewarts')
+        log = logging.getLogger('roguelike')
         log.addHandler(fh)
 
-class RogueWarts:
+class RogueLike:
     """
-    RogueWarts main class.
+    RogueLike main class.
 
     Methods:
       __init__
@@ -127,7 +127,7 @@ class RogueWarts:
             self.game = game.Game(uilib, uiparams)
         except Exception as e:
             log.error(tbck.format_exc())
-            raise util.RoguewartsException("initerror:" + str(e))
+            raise util.RogueLikeException("initerror:" + str(e))
 
     def run(self):
         """
@@ -165,10 +165,10 @@ def usage():
     """
     Print usage help screen.
     """
-    print 'RogueWarts, the Harry Potter Roguelike Game'
+    print 'RogueLike'
     version()
     print ''
-    print 'Usage: python roguewarts.py [PARAMETERS]'
+    print 'Usage: python roguelike.py [PARAMETERS]'
     print ''
     print ' PARAMETERS:'
     print '   -l ui_library_name        : to change UI library name (currently supporting libtcod (default) & curses)'
@@ -233,10 +233,10 @@ if __name__ == '__main__':
     config_logger()
     log.info("hullo!")
 
-    # roguewarts
+    # main
     try:
-        rw = RogueWarts(library, (maximize, forcedim))
-    except util.RoguewartsException as e:
+        rw = RogueLike(library, (maximize, forcedim))
+    except util.RogueLikeException as e:
         try:
             rw.finish()
         except Exception:

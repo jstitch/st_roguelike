@@ -1,7 +1,7 @@
 """
 objeto.py
 
-RogueWarts, object class and components.
+RogueLike, object class and components.
 
   class Object  : base Object logic class
 
@@ -13,7 +13,7 @@ RogueWarts, object class and components.
 import logging
 import math
 
-log = logging.getLogger('roguewarts.object')
+log = logging.getLogger('roguelike.object')
 
 class Object:
     """

@@ -1,7 +1,7 @@
 """
 player.py
 
-RogueWarts class for a user controlled character.
+RogueLike class for a user controlled character.
 
 The Player should be a Fighter object.
 
@@ -12,7 +12,7 @@ import logging
 
 import objeto
 
-log = logging.getLogger('roguewarts.player')
+log = logging.getLogger('roguelike.player')
 
 class Player(objeto.Object):
     """

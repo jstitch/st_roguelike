@@ -1,9 +1,9 @@
 """
 libtcod_wrapper.py
 
-libtcod graphical UI library wrapper for RogueWarts.
+libtcod graphical UI library wrapper for RogueLike.
 
-For RogueWarts UI purposes, a class is a UI wrapper if it implements
+For RogueLike UI purposes, a class is a UI wrapper if it implements
 certain methods. Look for the class documentation to see what methods
 they are.
 
@@ -12,7 +12,7 @@ they are.
                       libtcod consoles. This would allow, in theory, a
                       real time game too.
 
-  class libtcod_wrapper : implementation for RogueWarts UI using
+  class libtcod_wrapper : implementation for RogueLike UI using
                           libtcod
 
   func getcolorbyname : gets a libtcod color from a string name
@@ -24,7 +24,7 @@ import logging
 
 import game.util as util
 
-log = logging.getLogger('roguewarts.curses_wrapper')
+log = logging.getLogger('roguelike.curses_wrapper')
 
 LIMIT_FPS = 20
 
@@ -89,7 +89,7 @@ class libtcod_wrapper:
             width = (width / chw)
             height = (height / chh)
 
-        libtcod.console_init_root(w=width, h=height, title='Roguewarts', fullscreen=maximize)
+        libtcod.console_init_root(w=width, h=height, title='RogueLike', fullscreen=maximize)
         libtcod.sys_set_fps(LIMIT_FPS)
 
         # consoles

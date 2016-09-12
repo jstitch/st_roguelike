@@ -1,7 +1,7 @@
 """
 game package
 
-RogueWarts game engine and utilities.
+RogueLike game engine and utilities.
 
 See the modules for documentation.
 """

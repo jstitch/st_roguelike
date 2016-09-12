@@ -1,7 +1,7 @@
 """
 util.py
 
-RogueWarts utility definitios, functions and classes.
+RogueLike utility definitios, functions and classes.
 
   variable debug            : flag for debug messages (default False)
 
@@ -12,7 +12,7 @@ RogueWarts utility definitios, functions and classes.
 
   class Message             : Messages the game gives to the user via the UI
 
-  class RoguewartsException : Exceptions for the game should be
+  class RogueLikeException  : Exceptions for the game should be
                               handled using this class
 """
 
@@ -59,7 +59,7 @@ class Message:
     def __str__(self):
         return self.message
 
-class RoguewartsException(Exception):
+class RogueLikeException(Exception):
     """
     Generic game exception.
     """

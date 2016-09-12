@@ -1,7 +1,7 @@
 """
 uiwrappers package
 
-UI wrappers for RogueWarts.
+UI wrappers for RogueLike.
 
 Currently supported:
 
@@ -30,10 +30,10 @@ roguelike support, independent of the UI issues.
    session of the game to run cleanly. There is a patch to achieve
    this for libtcod version 1.5.0 inside the libtcod directory.
 
-   If you do not intend to run RogueWarts in a remote session, then no
-   changes to libtcod are needed, as long as the graphics environment
-   for the OS running the game is enabled (X Window in Unix
-   environments, Windows and MacOSX have this enabled by default).
+   If you do not intend to run RogueLike changes to libtcod are
+   needed, as long as the graphics environment for the OS running the
+   game is enabled (X Window in Unix environments, Windows and MacOSX
+   have this enabled by default).
 
 
 An UI wrapper should consist of a class (whose name should be the same

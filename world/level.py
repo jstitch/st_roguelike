@@ -2,7 +2,7 @@
 """
 level.py
 
-RogueWarts level definition.
+RogueLike level definition.
 
 Defines a level and its properties, inside the world.
 
@@ -21,7 +21,7 @@ import mapa
 import game.util as util
 from tile import TILETYPES
 
-log = logging.getLogger('roguewarts.level')
+log = logging.getLogger('roguelike.level')
 
 """Maximum number of objects to be generated in a given room, by type"""
 MAX_ROOM_OBJECTS = {'monster': 3, 'item': 2}

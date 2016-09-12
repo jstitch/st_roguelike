@@ -1,7 +1,7 @@
 """
 objects package
 
-RogueWarts objects classes.
+RogueLike objects classes.
 
 See each module for documentation.
 """

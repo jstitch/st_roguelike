@@ -2,7 +2,7 @@
 """
 tile.py
 
-RogueWarts tiles for the maps.
+RogueLike tiles for the maps.
 
   class TILETYPES    : holds dictionaries to define each type of tile a
                        map can have

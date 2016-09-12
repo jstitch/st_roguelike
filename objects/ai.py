@@ -1,7 +1,7 @@
 """
 ai.py
 
-RogueWarts, AI classes.
+RogueLike, AI classes.
 
 This classes should be composited in some monster Object to define its
 behaviour.

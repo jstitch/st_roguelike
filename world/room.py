@@ -1,7 +1,7 @@
 """
 room.py
 
-RogueWarts rooms for a map.
+RogueLike rooms for a map.
 
 Figure classes use ducktyping to give a common interface to map
 methods.

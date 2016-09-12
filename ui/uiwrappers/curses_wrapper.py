@@ -1,9 +1,9 @@
 """
 curses_wrapper.py
 
-NCurses graphical UI library wrapper for RogueWarts.
+NCurses graphical UI library wrapper for RogueLike.
 
-For RogueWarts UI purposes, a class is a UI wrapper if it implements
+For RogueLike UI purposes, a class is a UI wrapper if it implements
 certain methods. Look for the class documentation to see what methods
 they are.
 
@@ -17,7 +17,7 @@ sourcode may allow this (note that this would only be necessary in the
 'server' on which the game would run). I included a patch for libtcod
 1.5.0 to achieve this.
 
-  class curses_wrapper : implementation for RogueWarts UI using
+  class curses_wrapper : implementation for RogueLike UI using
                          NCurses
 """
 
@@ -28,7 +28,7 @@ import logging
 
 import game.util as util
 
-log = logging.getLogger('roguewarts.curses_wrapper')
+log = logging.getLogger('roguelike.curses_wrapper')
 
 class curses_wrapper:
     """

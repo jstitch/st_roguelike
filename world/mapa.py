@@ -2,7 +2,7 @@
 """
 mapa.py
 
-RogueWarts map.
+RogueLike map.
 
 A level in the game's world must have an associated map, which is
 defined in here.
@@ -45,7 +45,7 @@ from codecs import open as copen
 import room
 import tile
 
-log = logging.getLogger('roguewarts.map')
+log = logging.getLogger('roguelike.map')
 
 """Default maximum size of the map."""
 DEF_MAP_DIMS = (200,100)

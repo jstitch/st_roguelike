@@ -1,10 +1,10 @@
 """
 ui.py
 
-RogueWarts game UI logic.
+RogueLike game UI logic.
 
-The UI of RogueWarts is managed by this module, but the real ui work
-is done by certain ui wrapper (in uiwrappers module), which should use
+The UI of RogueLike is managed by this module, but the real ui work is
+done by certain ui wrapper (in uiwrappers module), which should use
 certain ui library to implement all the UI functionality used in here.
 
 That's why the ui wrappers must follow certain 'interface', because
@@ -21,7 +21,7 @@ import traceback as tbck
 
 import game.util as util
 
-log = logging.getLogger('roguewarts.ui')
+log = logging.getLogger('roguelike.ui')
 
 class UI:
     """
@@ -233,7 +233,7 @@ class UI:
         """
         try:
             if x < 0 or y < 0 or x > level.mapa.w - 1 or y > level.mapa.h - 1:
-                raise util.RoguewartsException("ERROR: char out of map bounds! (x=%d,y=%d) when max map is (%d,%d)" %
+                raise util.RogueLikeException("ERROR: char out of map bounds! (x=%d,y=%d) when max map is (%d,%d)" %
                                                (x,y,level.mapa.w - 1,level.mapa.h - 1))
 
             # to render correctly, we need the character dimensions of the

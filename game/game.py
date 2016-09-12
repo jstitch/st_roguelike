@@ -2,12 +2,12 @@
 """
 game.py
 
-RogueWarts game control logic.
+RogueLike game control logic.
 
-I intend RogeWarts to be programmed in a fashion following certain
+I intend RogueLike to be programmed in a fashion following certain
 architecture, separating layers for logic, display and game control.
 
-Even if roguewarts.py holds the main routine and loop, game.py is
+Even if roguelike.py holds the main routine and loop, game.py is
 intented to be the Control layer.
 
 ui.py would be the Display layer (supported by some specific ui
@@ -27,7 +27,7 @@ This module holds the following structures:
                        to the user and a color which is used to draw
                        that type of message
 
-  class Game         : Control class for RogueWarts: game initialization
+  class Game         : Control class for RogueLike: game initialization
                        (including UI and loading/saving to disk),
                        transition between game states, initializing
                        the Logic
@@ -49,7 +49,7 @@ import util
 import ui.ui as ui
 import world.world as world
 
-log = logging.getLogger('roguewarts.game')
+log = logging.getLogger('roguelike.game')
 
 """Game states."""
 STATES = {'PLAYING'  : 0,
@@ -109,7 +109,7 @@ class Game:
         except Exception as e:
             log.error(tbck.format_exc())
             self.ui.close()
-            raise util.RoguewartsException("initerror: " + str(e))
+            raise util.RogueLikeException("initerror: " + str(e))
 
     def terminate(self):
         """
@@ -148,7 +148,7 @@ class Game:
         self.curl = self.world.new_game()
         self.curp = self.world.players[0]
 
-        self.util.add_message(_("Welcome to RogueWarts Guest!"), MESSAGETYPES['SUCCESS'])
+        self.util.add_message(_("Welcome to RogueLike Guest!"), MESSAGETYPES['SUCCESS'])
         if util.debug:
             self.util.add_message("x:%d,y:%d" % (self.curp.x, self.curp.y), MESSAGETYPES['ALERT'])
 
@@ -272,14 +272,14 @@ class Gameplay:
                 for obj in self.engine.curl.objects:
                     if obj.ai:
                         obj.ai.take_turn()
-        except util.RoguewartsException as e:
+        except util.RogueLikeException as e:
             try:
                 log.error(tbck.format_exc())
                 self.util.add_message(str(e), MESSAGETYPES['ALERT'])
                 self.action_type = ''
             except Exception as e2:
                 log.critical(str(e) + " -> " + str(e2))
-                raise Exception("ERROR: could not raise roguewarts exception!")
+                raise Exception("ERROR: could not raise roguelike exception!")
 
     def action(self, player_action):
         """
