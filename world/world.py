@@ -107,14 +107,14 @@ class World:
         """
         levels = [] # just a list of all the levels in the world
 
-        levels.append(level.Level(0, 'init', WORLDBRANCHES.dungeons, self.wrldrg))
-        levels.append(level.Level(1, '1st floor', WORLDBRANCHES.classrooms, self.wrldrg))
-        levels.append(level.Level(-1, '1st dung', WORLDBRANCHES.dungeons, self.wrldrg))
+        levels.append(level.Level(0, 'init', WORLDBRANCHES.from_file, self.wrldrg))
+        levels.append(level.Level(1, 'up', WORLDBRANCHES.from_file, self.wrldrg))
+        levels.append(level.Level(-1, 'down', WORLDBRANCHES.from_file, self.wrldrg))
 
-        # graph relating levels to connecting levels
-        self.levels[levels[0].name] = [levels[0], levels[1], levels[2]]
-        self.levels[levels[1].name] = [levels[1], levels[0]]
-        self.levels[levels[2].name] = [levels[2], levels[0]]
+        # directed graph relating levels to connecting levels
+        self.levels[levels[0].name] = [(levels[0],'.'),(levels[1],'<'),(levels[2],'>')]
+        self.levels[levels[1].name] = [(levels[1],'.'),(levels[0],'>')]
+        self.levels[levels[2].name] = [(levels[2],'.'),(levels[0],'<')]
 
     def new_game(self):
         """

@@ -48,7 +48,7 @@ import tile
 log = logging.getLogger('roguelike.map')
 
 """Default maximum size of the map."""
-DEF_MAP_DIMS = (200,100)
+DEF_MAP_DIMS = (320,240)
 
 """Default limits constants concerning rooms in the map."""
 DUNG_ROOM_LIMS = {'max': 30, 'min': 10, 'num': 50}
