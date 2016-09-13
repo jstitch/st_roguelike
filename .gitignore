@@ -1,4 +1,6 @@
 *~
 *.pyc
 libtcod.so
+libtcod/
 *.log
+log/

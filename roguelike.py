@@ -3,7 +3,7 @@
 """
 roguelike.py
 
-Roguelike Framework
+RogueLike Framework
 
 This game may use different graphical libraries for displaying the
 game. Curses is supported, but also libtcod, which BTW also gives
@@ -48,7 +48,7 @@ This module also includes the following:
   main routine
 
 
-Roguelike
+RogueLike
 Copyright (C) 2011 Javier Novoa C.
 
 This program is free software: you can redistribute it and/or modify

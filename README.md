@@ -1,24 +1,18 @@
-RogueWarts, the Harry Potter Roguelike Game
-===========================================
+ST_RogueLike, a RogueLike of Stranger Things
+============================================
 
-A roguelike game themed on the Harry Potter world.
+A roguelike game themed on Netflix (R)  Stranger Things.
 
 The idea behind the game is to create an adventure game in the
-roguelike genre, with its world based on the one created by
-J.K.Rowling in its Harry Potter series.
+roguelike genre, with its world based on the Stranger Things series by
+Netflix.
 
-Its intention IS NOT to use any Harry Potter's characters (perhaps
-just places). The idea is to follow the background information at
-websites such as the Harry Potter Lexicon (hp-lexicon.org) to give the
-game a 'real' Harry Potter look, not to replay any scenes from the
-books/movies in it.
-
-You need the doryen library (libtcod v1.5.0) to run this
+You need the doryen library (libtcod v1.5.1) to run this
 game. Download at http://doryen.eptalys.net/libtcod/download/
 
 To play, just type:
 
-  python roguewarts.py
+  python roguelike.py
 
 (please mind that Python 2 is required)
 
@@ -32,7 +26,7 @@ crashed.
 
 Files Info
 ----------
-- roguewarts.py is the entrance to the game, where the main loop lives.
+- roguelike.py is the entrance to the game, where the main loop lives.
 - data/ holds data files for the game
 - libtcod/ holds the python module for libtcod
 - game/ holds the game engine logic
@@ -40,13 +34,14 @@ Files Info
 - ui/ holds the UI logic
 - objects/ holds the objects-monsters-players logic
 - log/ stores the game logs
-- libtcod is needed for roguewarts to work. Please download it and add
+- util/ utility scripts
+- libtcod is needed for this game to work. Please download it and add
   it to the game root directory
 
 (The reason that libtcod is not included as part of the game files is
-because it's in fact an external library, not part of
-roguewarts. Also, you may need a different specific compilation of the
-doryen library, depending on your system)
+because it's in fact an external library, not part of the game. Also,
+you may need a different specific compilation of the doryen library,
+depending on your system)
 
 DEV Info
 --------
@@ -55,7 +50,7 @@ This game is developed using:
 
 - Python (2.7, but earliear 2.x versions are supported as long as
   libtcod is supported by them)
-- libtcod v1.5.0
+- libtcod v1.5.1
 
 Currently it may be played using the following graphical UI libraries:
 
@@ -65,7 +60,7 @@ Currently it may be played using the following graphical UI libraries:
 (*) For running through a remote server, libtcod library must be
     recompiled. See the ui.uiwrappers package documentation for more
     info on this. libtcod directory includes a patch for libtcod
-    v1.5.0 to achieve this. If you are not planning to run the game
+    v1.5.1 to achieve this. If you are not planning to run the game
     through a remote server, this patch and this note are irrelevant.
 
 (**) Please download or compile your libtcod installation according to
@@ -82,9 +77,11 @@ Project Status
 The current status of the game is a VERY BASIC development version
 which is just capable of:
 
--Generating one tipe of level
+-Generating one tipe of level (Dungeons)
 
--Creating a player that can move through the level
+-Loading predesigned levels (not randomnized)
+
+-Creating a player that can move through the levels
 
 Why so basic yet?
 -----------------
@@ -152,7 +149,9 @@ on the pydoc.
 - Intersection between rooms is done just for rectangular ones. Should
   be generalized for other geometrics too.
 
-- Implement map generation for other types than the Dungeon2 one.
+- Implement map generation for other types than the Dungeon2 one
+  (Currently the possibility to load predesigned levels from text
+  files has been included).
 
 - Implement __str__ method for the world.level.Level class. This
   should draw the complete map of the level. It should be supported by

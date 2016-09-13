@@ -81,7 +81,6 @@ class libtcod_wrapper:
           tuple with screen size in (x,y), negative numbers if
           terminal doesn't satisfies minimum requirements
         """
-        # libtcod.console_set_custom_font(fontFile='data/fonts/arial12x12.png', flags=libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
         libtcod.console_set_custom_font(fontFile='data/fonts/terminal12x12_gs_ro.png', flags=libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_ASCII_INROW)
 
         if forcedim:
