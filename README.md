@@ -8,7 +8,7 @@ roguelike genre, with its world based on the Stranger Things series by
 Netflix.
 
 You need the doryen library (libtcod v1.5.1) to run this
-game. Download at http://doryen.eptalys.net/libtcod/download/
+game. Download at https://bitbucket.org/libtcod/libtcod/downloads
 
 To play, just type:
 
@@ -27,7 +27,9 @@ crashed.
 Files Info
 ----------
 - roguelike.py is the entrance to the game, where the main loop lives.
-- data/ holds data files for the game
+- data/ holds data files for the game, you need to link or copy a
+  fonts directory inside here holding the font file to use (default:
+  terminal12x12_gs_ro.png included on libtcod 1.5.1)
 - libtcod/ holds the python module for libtcod
 - game/ holds the game engine logic
 - world/ holds the game's world logic
@@ -65,7 +67,7 @@ Currently it may be played using the following graphical UI libraries:
 
 (**) Please download or compile your libtcod installation according to
      your system. Downloads at
-     http://doryen.eptalys.net/libtcod/download/
+     https://bitbucket.org/libtcod/libtcod/downloads
 
 But more graphical UI libraries may be added. Please consult the pydoc
 documentation in the UI modules for more information.
@@ -102,7 +104,7 @@ I got a lot of ideas from this sources:
   (http://roguebasin.roguelikedevelopment.org/index.php/Complete_Roguelike_Tutorial,_using_python%2Blibtcod)
 - Its corresponding forum thread at Roguecentral (home of the Doryen
   site, which hosts libtcod development)
-  (http://doryen.eptalys.net/forum/index.php?topic=328.0)
+  (http://roguecentral.org/doryen/forum/index.php?topic=328.0)
 - A roguelike tutorial which began to appear at Kooneiform blog, but
   was then interrupted when Roguebasin published its own. However, I
   found a lot of interesting ideas in the source code I tried to use
