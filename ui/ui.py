@@ -222,9 +222,9 @@ class UI:
         offsetted to some side of the rendered map
 
         Arguments:
-          level : the level which map will be rendered
-          (x,y) : intended center coordinates of the map
-          fov_map
+          level   : the level which map will be rendered
+          (x,y)   : intended center coordinates of the map
+          fov_map : field of view (fov) map
 
         TODO:
           - should manage the internals of the main area in here

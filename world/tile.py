@@ -193,7 +193,7 @@ TILETYPES = {
               'file_char'  : u'h',
               'just_color' : False,
               'color'      : 'green',
-              'nv_color'   : 'darsket_lime',
+              'nv_color'   : 'darkest_lime',
               'block_pass' : False,
               'block_sight': False},
 

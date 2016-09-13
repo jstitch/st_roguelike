@@ -354,7 +354,7 @@ class curses_wrapper:
           (x,y)       : the coordinates to be the center of the drawing
           (minx,miny) : the minimum coordinates from the map to be drawn
           (maxx,maxy) : the maximum coordinates from the map to be drawn
-          fov_map
+          fov_map     : fov map
           main_area   : the area where the map is to be drawn
         """
         from world.tile import TILETYPES
@@ -383,7 +383,8 @@ class curses_wrapper:
                 if not visible:
                     if tile.explored:
                         # draw map tile with char/color <- modifications for explored/not visible
-                        pass
+                        main_area['con'].addstr(cy, cx, TILETYPES[tile.tipo]['char'].encode('utf8'),
+                                                curses.color_pair(curses_wrapper.COLORS[TILETYPES[tile.tipo]['nv_color']]['n']))
                     else:
                         # main_area['con'].addstr(cy, cx, ' ',
                         #                         curses.color_pair(curses_wrapper.COLORS['black']['n']))
