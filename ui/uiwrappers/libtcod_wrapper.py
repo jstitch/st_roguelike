@@ -81,7 +81,8 @@ class libtcod_wrapper:
           tuple with screen size in (x,y), negative numbers if
           terminal doesn't satisfies minimum requirements
         """
-        libtcod.console_set_custom_font(fontFile='data/fonts/arial12x12.png', flags=libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+        # libtcod.console_set_custom_font(fontFile='data/fonts/arial12x12.png', flags=libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+        libtcod.console_set_custom_font(fontFile='data/fonts/terminal12x12_gs_ro.png', flags=libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_ASCII_INROW)
 
         if forcedim:
             (width, height) = libtcod.sys_get_current_resolution()
@@ -228,7 +229,7 @@ class libtcod_wrapper:
             except IndexError:
                 break
 
-    def render(self, level, x, y, minx, miny, maxx, maxy, main_area):
+    def render(self, level, x, y, minx, miny, maxx, maxy, fov_map, main_area, *args, **kwargs):
         """
         Renders current level.
 
@@ -253,6 +254,7 @@ class libtcod_wrapper:
           (x,y)       : the coordinates to be the center of the drawing
           (minx,miny) : the minimum coordinates from the map to be drawn
           (maxx,maxy) : the maximum coordinates from the map to be drawn
+          fov_map
           main_area   : the area where the map is to be drawn
         """
         from world.tile import TILETYPES
@@ -265,10 +267,10 @@ class libtcod_wrapper:
                         (main_area['h'] - map_.h)//2 if map_.h < main_area['h'] else 0)
 
         # draw map tiles
-        for my, cy in map(None, range(miny, maxy), range(cony, map_.h + cony)):
-            for mx, cx in map(None, range(minx, maxx), range(conx, map_.w + conx)):
-                visible = True # libtcod.map_is_in_fov(fov_map, x, y)
+        for my, cy in zip(range(miny, maxy), range(cony, map_.h + cony)):
+            for mx, cx in zip(range(minx, maxx), range(conx, map_.w + conx)):
                 try:
+                    visible = libtcod.map_is_in_fov(fov_map, mx, my)
                     tile = map_.mapa[mx][my]
                 except Exception as e:
                     continue
@@ -276,17 +278,31 @@ class libtcod_wrapper:
                 if not visible:
                     if tile.explored:
                         # draw map tile with char/color <- modifications for explored/not visible
-                        pass
+                        libtcod.console_put_char_ex(main_area['con'],
+                                                    cx, cy,
+                                                    ' ' if TILETYPES[tile.tipo]['just_color'] else TILETYPES[tile.tipo]['char'].encode('utf8'),
+                                                    libtcod.white,
+                                                    getcolorbyname(TILETYPES[tile.tipo]['nv_color']))
+                    else:
+                        libtcod.console_put_char_ex(main_area['con'],
+                                                    cx, cy,
+                                                    ' ',
+                                                    libtcod.black,
+                                                    libtcod.black)
                 # it's visible
                 else:
                     # draw map tile with char/color <- as is since it is visible
-                    libtcod.console_put_char(main_area['con'], cx, cy, ' ' if TILETYPES[tile.tipo]['just_color'] else TILETYPES[tile.tipo]['char'].encode('utf8'), libtcod.BKGND_NONE)
-                    libtcod.console_set_char_background(main_area['con'], cx, cy, getcolorbyname(TILETYPES[tile.tipo]['color']), libtcod.BKGND_SET)
-                    libtcod.console_set_char_background(main_area['con'], conx + x - minx, cony + y - miny, getcolorbyname('red'), libtcod.BKGND_SET)
+                    libtcod.console_put_char_ex(main_area['con'],
+                                                cx, cy,
+                                                ' ' if TILETYPES[tile.tipo]['just_color'] else TILETYPES[tile.tipo]['char'].encode('utf8'),
+                                                libtcod.white,
+                                                getcolorbyname(TILETYPES[tile.tipo]['color']))
                     # since now it's visible, mark it as explored
                     tile.explored = True
         for p in level.players:
-            libtcod.console_put_char(main_area['con'], p.x, p.y, '@', libtcod.BKGND_NONE)
+            libtcod.console_set_char(main_area['con'],
+                                     conx+x-minx, cony+y-miny,
+                                     '@')
 
         # draw objects in map...
 

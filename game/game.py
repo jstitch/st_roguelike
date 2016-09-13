@@ -147,12 +147,14 @@ class Game:
 
         self.curl = self.world.new_game()
         self.curp = self.world.players[0]
+        self.curp.ini_fov_map()
+        self.curp.compute_fov_map()
 
         self.util.add_message(_("Welcome to RogueLike Guest!"), MESSAGETYPES['SUCCESS'])
         if util.debug:
             self.util.add_message("x:%d,y:%d" % (self.curp.x, self.curp.y), MESSAGETYPES['ALERT'])
 
-        self.ui.refresh_map(self.curl, self.curp.x, self.curp.y)
+        self.ui.refresh_map(self.curl[0], self.curp.x, self.curp.y, self.curp.fov_map,self)
 
     def exit(self):
         """
@@ -254,10 +256,10 @@ class Gameplay:
                 if self.action_type == self.ACTIONS['took-turn']:
                     if util.debug:
                         self.util.add_message("x:%d,y:%d" % (self.engine.curp.x, self.engine.curp.y), MESSAGETYPES['ALERT'])
-                    self.ui.refresh_map(self.engine.curl, self.engine.curp.x, self.engine.curp.y)
+                    self.ui.refresh_map(self.engine.curl[0], self.engine.curp.x, self.engine.curp.y, self.engine.curp.fov_map, self.engine)
 
                 # clear objects in current level display
-                for obj in self.engine.curl.objects:
+                for obj in self.engine.curl[0].objects:
                     obj.clear()
                     self.ui.clear_obj(obj)
 
@@ -269,7 +271,7 @@ class Gameplay:
 
             # let monsters take turn, only if it applies (for speed/last input command considerations)
             if self.engine.state == STATES['PLAYING'] and self.action_type != self.ACTIONS['didnt-take-turn']:
-                for obj in self.engine.curl.objects:
+                for obj in self.engine.curl[0].objects:
                     if obj.ai:
                         obj.ai.take_turn()
         except util.RogueLikeException as e:
@@ -312,7 +314,7 @@ class Gameplay:
                 return self.ACTIONS['took-turn']
         # DOWN
         elif player_action == tcod.KEY_DOWN or player_action == tcod.KEY_KP2:
-            if self.engine.curp.y < self.engine.curl.mapa.h - 1:
+            if self.engine.curp.y < self.engine.curl[0].mapa.h - 1:
                 self.engine.curp.move(0,1)
                 return self.ACTIONS['took-turn']
         # LEFT
@@ -322,7 +324,7 @@ class Gameplay:
                 return self.ACTIONS['took-turn']
         # RIGHT
         elif player_action == tcod.KEY_RIGHT or player_action == tcod.KEY_KP6:
-            if self.engine.curp.x < self.engine.curl.mapa.w - 1:
+            if self.engine.curp.x < self.engine.curl[0].mapa.w - 1:
                 self.engine.curp.move(1,0)
                 return self.ACTIONS['took-turn']
         # LEFT-UP
@@ -332,18 +334,35 @@ class Gameplay:
                 return self.ACTIONS['took-turn']
         # RIGHT-UP
         elif player_action == tcod.KEY_KP9:
-            if self.engine.curp.x < self.engine.curl.mapa.w - 1 and self.engine.curp.y > 0:
+            if self.engine.curp.x < self.engine.curl[0].mapa.w - 1 and self.engine.curp.y > 0:
                 self.engine.curp.move(1,-1)
                 return self.ACTIONS['took-turn']
         # LEFT-DOWN
         elif player_action == tcod.KEY_KP1:
-            if self.engine.curp.x > 0 and self.engine.curp.y < self.engine.curl.mapa.h - 1:
+            if self.engine.curp.x > 0 and self.engine.curp.y < self.engine.curl[0].mapa.h - 1:
                 self.engine.curp.move(-1,1)
                 return self.ACTIONS['took-turn']
         # RIGHT-DOWN
         elif player_action == tcod.KEY_KP3:
-            if self.engine.curp.x < self.engine.curl.mapa.w - 1 and self.engine.curp.y < self.engine.curl.mapa.h - 1:
+            if self.engine.curp.x < self.engine.curl[0].mapa.w - 1 and self.engine.curp.y < self.engine.curl[0].mapa.h - 1:
                 self.engine.curp.move(1,1)
                 return self.ACTIONS['took-turn']
+        # CHANGE-LEVEL
+        elif player_action in ['<','>']:
+            if self.engine.curl[0].mapa.mapa[self.engine.curp.x][self.engine.curp.y].tipo == 'stairs':
+                new_poss_lev = [ lev for lev in self.engine.world.levels[self.engine.curl[0].name] if lev[1]==player_action ]
+                for lev in new_poss_lev:
+                    # assumes all leves are dim-equal, so stairs must have same coordinates between them
+                    # and so stairs are connected by corresponding coordinates
+                    if lev[0].mapa.mapa[self.engine.curp.x][self.engine.curp.y].tipo == 'stairs':
+                        self.engine.curl = lev
+                        self.engine.curl[0].players.append(self.engine.curp)
+
+                        self.engine.curp.curlevel[0].players.remove(self.engine.curp)
+                        self.engine.curp.curlevel = self.engine.curl
+                        self.engine.curp.ini_fov_map()
+                        self.engine.curp.compute_fov_map()
+
+                        return self.ACTIONS['took-turn']
 
         return self.ACTIONS['didnt-take-turn']

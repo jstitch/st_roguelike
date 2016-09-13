@@ -100,15 +100,27 @@ class curses_wrapper:
         'light_cyan'      : {'n': 20, 'fg': curses.COLOR_CYAN,    'bg': curses.COLOR_WHITE},
 
         'dark_red'       : {'n': 21, 'fg': curses.COLOR_RED,     'bg': curses.COLOR_BLACK},
+        'darker_red'       : {'n': 21, 'fg': curses.COLOR_RED,     'bg': curses.COLOR_BLACK},
+        'darkest_red'       : {'n': 21, 'fg': curses.COLOR_RED,     'bg': curses.COLOR_BLACK},
+        'darkest_crimson'       : {'n': 21, 'fg': curses.COLOR_RED,     'bg': curses.COLOR_BLACK},
         'dark_green'     : {'n': 22, 'fg': curses.COLOR_GREEN,   'bg': curses.COLOR_BLACK},
+        'darker_green'     : {'n': 22, 'fg': curses.COLOR_GREEN,   'bg': curses.COLOR_BLACK},
+        'darkest_green'     : {'n': 22, 'fg': curses.COLOR_GREEN,   'bg': curses.COLOR_BLACK},
+        'darkest_lime'     : {'n': 22, 'fg': curses.COLOR_GREEN,   'bg': curses.COLOR_BLACK},
         'dark_yellow'    : {'n': 23, 'fg': curses.COLOR_YELLOW,  'bg': curses.COLOR_BLACK},
+        'darker_yellow'    : {'n': 23, 'fg': curses.COLOR_YELLOW,  'bg': curses.COLOR_BLACK},
+        'darkest_yellow'    : {'n': 23, 'fg': curses.COLOR_YELLOW,  'bg': curses.COLOR_BLACK},
+        'darkest_amber'    : {'n': 23, 'fg': curses.COLOR_YELLOW,  'bg': curses.COLOR_BLACK},
         'dark_blue'      : {'n': 24, 'fg': curses.COLOR_BLUE,    'bg': curses.COLOR_BLACK},
         'dark_magenta'   : {'n': 25, 'fg': curses.COLOR_MAGENTA, 'bg': curses.COLOR_BLACK},
         'dark_cyan'      : {'n': 26, 'fg': curses.COLOR_CYAN,    'bg': curses.COLOR_BLACK},
+        'darker_cyan'      : {'n': 26, 'fg': curses.COLOR_CYAN,    'bg': curses.COLOR_BLACK},
 
         'grey'        : {'n': 27, 'fg': curses.COLOR_WHITE, 'bg': curses.COLOR_BLACK},
         'dark_grey'   : {'n': 28, 'fg': curses.COLOR_BLACK, 'bg': curses.COLOR_BLACK},
-        'light_grey'  : {'n': 29, 'fg': curses.COLOR_BLACK, 'bg': curses.COLOR_WHITE}
+        'darker_grey'   : {'n': 28, 'fg': curses.COLOR_BLACK, 'bg': curses.COLOR_BLACK},
+        'darkest_grey'   : {'n': 28, 'fg': curses.COLOR_BLACK, 'bg': curses.COLOR_BLACK},
+        'light_grey'  : {'n': 29, 'fg': curses.COLOR_BLACK, 'bg': curses.COLOR_WHITE},
         }
 
     def __init__(self):
@@ -317,7 +329,7 @@ class curses_wrapper:
 
         self.flush(mess_area)
 
-    def render(self, level, x, y, minx, miny, maxx, maxy, main_area):
+    def render(self, level, x, y, minx, miny, maxx, maxy, fov_map, main_area, *args, **kwargs):
         """
         Renders current level.
 
@@ -342,6 +354,7 @@ class curses_wrapper:
           (x,y)       : the coordinates to be the center of the drawing
           (minx,miny) : the minimum coordinates from the map to be drawn
           (maxx,maxy) : the maximum coordinates from the map to be drawn
+          fov_map
           main_area   : the area where the map is to be drawn
         """
         from world.tile import TILETYPES
@@ -356,10 +369,10 @@ class curses_wrapper:
         # draw map tiles
         if util.debug:
             c = 0
-        for my, cy in map(None, range(miny, maxy), range(cony, map_.h + cony)):
-            for mx, cx in map(None, range(minx, maxx), range(conx, map_.w + conx)):
-                visible = True # libtcod.map_is_in_fov(fov_map, x, y)
+        for my, cy in zip(range(miny, maxy), range(cony, map_.h + cony)):
+            for mx, cx in zip(range(minx, maxx), range(conx, map_.w + conx)):
                 try:
+                    visible = libtcod.map_is_in_fov(fov_map, mx, my)
                     tile = map_.mapa[mx][my]
                 # BUG: sometimes None appears on the map(?!)
                 except Exception as e:
@@ -371,6 +384,10 @@ class curses_wrapper:
                     if tile.explored:
                         # draw map tile with char/color <- modifications for explored/not visible
                         pass
+                    else:
+                        # main_area['con'].addstr(cy, cx, ' ',
+                        #                         curses.color_pair(curses_wrapper.COLORS['black']['n']))
+                        pass
                 # it's visible
                 else:
                     # draw map tile with char/color <- as is since it is visible
@@ -378,11 +395,12 @@ class curses_wrapper:
                         main_area['con'].addstr(cy, cx, TILETYPES[tile.tipo]['char'].encode('utf8'),
                                                 curses.color_pair(curses_wrapper.COLORS[TILETYPES[tile.tipo]['color']]['n']))
                         main_area['con'].addstr(cony + y - miny, conx + x - minx, '@',
-                                                curses.color_pair(curses_wrapper.COLORS['red']['n']))
+                                                curses.color_pair(curses_wrapper.COLORS['blue']['n']))
                     except Exception as e:
                         pass
                     # since now it's visible, mark it as explored
                     tile.explored = True
+
         if util.debug:
             log.debug("none appeared %d times" % c)
 

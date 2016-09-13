@@ -212,7 +212,7 @@ class UI:
             log.critical(str(e))
             raise AttributeError("ERROR: could not print messages")
 
-    def refresh_map(self, level, x, y):
+    def refresh_map(self, level, x, y, fov_map, *args, **kwargs):
         """
         Render current level.
 
@@ -224,6 +224,7 @@ class UI:
         Arguments:
           level : the level which map will be rendered
           (x,y) : intended center coordinates of the map
+          fov_map
 
         TODO:
           - should manage the internals of the main area in here
@@ -272,7 +273,7 @@ class UI:
             # draw objects in map...
 
             # sent to ui lib
-            self.ui.render(level, x, y, minx, miny, maxx, maxy, self.areas['main'])
+            self.ui.render(level, x, y, minx, miny, maxx, maxy, fov_map, self.areas['main'], *args, **kwargs)
 
         except AttributeError as e:
             self.ui.close()

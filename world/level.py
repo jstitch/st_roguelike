@@ -101,7 +101,7 @@ class Level:
             maptype = mapa.MAPTYPES.labyrinth
 
         # debugging dungeons, remove True or condition
-        if util.debug:
+        if False and util.debug:
             maptype=mapa.MAPTYPES.dungeon2
 
         self.mapa = getattr(mapa, maptype['name'])(maptype, rng)

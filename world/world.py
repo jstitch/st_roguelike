@@ -127,15 +127,14 @@ class World:
         Returns:
           level.Level number 1
         """
-        # create initial player
-        self.players.append(player.Player('@', 'blue', 'Player', 0, 0))
-
         initlev = self.levels['init'][0]
 
+        # create initial player
+        self.players.append(player.Player('@', 'blue', 'Player', 0, 0, initlev))
+
         for p in self.players:
-            initlev.objects.append(p)
-            initlev.players.append(p)
-            p.curlevel = initlev
-            p.x,p.y = p.curlevel.mapa.get_stairs(st='start')
+            initlev[0].objects.append(p)
+            initlev[0].players.append(p)
+            p.x,p.y = p.curlevel[0].mapa.get_stairs(st='start')
 
         return initlev
