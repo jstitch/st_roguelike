@@ -95,6 +95,15 @@ TILETYPES = {
               'block_pass' : True,
               'block_sight': False},
 
+    'curtained_window' : {'name'     : 'window',
+                          'char'       : u'=',
+                          'file_char'  : u'[',
+                          'just_color' : False,
+                          'color'      : 'light_cyan',
+                          'nv_color'   : 'darker_cyan',
+                          'block_pass' : True,
+                          'block_sight': True},
+
     'closeddoor' : {'name' : 'door',
               'char'       : u'+',
               'file_char'  : u'+',

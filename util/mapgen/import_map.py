@@ -5,38 +5,39 @@ def main(fname):
     rgb_im = img.convert('RGB')
 
     mapa = {
-        (255 ,255,255) : '?', # blanco         - especial
-        (254 ,255,252) : '?', # blanco         - especial
+        (255,255,255) : '?', # blanco         - especial
+        (254,255,252) : '?', # blanco         - especial
 
-        (204 ,204,204) : ' ', # gris muy claro - aire
-        (204 ,202,206) : ' ', # gris muy claro - aire
-        (148 ,44,67)   : '`', # rosa oscuro    - aire sobre agua
+        (204,204,204) : ' ', # gris muy claro - aire
+        (204,202,206) : ' ', # gris muy claro - aire
+        (148,44,67)   : '`', # rosa oscuro    - aire sobre agua
 
-        (12  ,122,123) : '=', # azul           - ventana
+        (12,122,123)  : '=', # azul           - ventana
+        (12,123,88)   : '[', # azul           - ventana cerrada con cortina
 
-        (12  ,255,0)   : '^', # verde          - pasto
+        (12,255,0)    : '^', # verde          - pasto
 
-        (50  ,51,49)   : '_', # gris oscuro    - calle
-        (100 ,102,99)  : '.', # gris claro     - acera
-        (102 ,102,102) : '.', # gris claro     - piso
+        (50,51,49)    : '_', # gris oscuro    - calle
+        (100,102,99)  : '.', # gris claro     - acera
+        (102,102,102) : '.', # gris claro     - piso
 
-        (128 ,127,3)   : '%', # cafe           - mueble
+        (128,127,3)   : '%', # cafe           - mueble
 
-        (129 ,0,0)     : '#', # ladrillo       - muro
-        (111 ,13,19)   : '#', # ladrillo       - muro
+        (129,0,0)     : '#', # ladrillo       - muro
+        (111,13,19)   : '#', # ladrillo       - muro
 
-        (105 ,136,151) : '|', # gris azulado   - reja
+        (105,136,151) : '|', # gris azulado   - reja
 
-        (250 ,0,0)     : '+', # rojo           - puerta cerrada
-        (254 ,56,111)  : '*', # rosa           - puerta abierta
+        (250,0,0)     : '+', # rojo           - puerta cerrada
+        (254,56,111)  : '*', # rosa           - puerta abierta
 
-        (52  ,74,43)   : 'T', # verde oscuro   - arbol
-        (252 ,251,0)   : 'X', # amarillo       - escalera
+        (52,74,43)    : 'T', # verde oscuro   - arbol
+        (252,251,0)   : 'X', # amarillo       - escalera
 
-        (70  ,41,78)   : '~', # azul oscuro    - dentro de agua
+        (70,41,78)    : '~', # azul oscuro    - dentro de agua
 
-        (0   ,1,0)     : ',', # negro          - roca
-        (0   ,0,0)     : ',', # negro          - roca
+        (0,1,0)       : ',', # negro          - roca
+        (0,0,0)       : ',', # negro          - roca
         }
 
     img = Image.open(fname+'.png')
